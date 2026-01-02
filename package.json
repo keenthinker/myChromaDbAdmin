@@ -1,0 +1,22 @@
+{
+  "name": "mychromadbadmin",
+  "version": "0.0.1",
+  "description": "Unofficial ChromaDB Administration WebUI",
+  "keywords": [
+    "ChromaDB",
+    "Vector",
+    "Database",
+    "Vector",
+    "Storage",
+    "Vector",
+    "Storage",
+    "RAG"
+  ],
+  "license": "MIT",
+  "author": "keenthinker",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
