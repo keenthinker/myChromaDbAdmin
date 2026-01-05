@@ -23,7 +23,7 @@ class ChromaDbClient {
         return this.request('/collections/add', { method: 'POST', body: JSON.stringify({ name, configuration, metadata }) });
     }
     async deleteCollection(name) {
-        await this.request(`/collections/${name}/delete`, { method: 'POST' });
+        await this.request(`/collections/${name}/delete`, { method: 'DELETE' });
     }
     async updateCollection(id, newName, newMetadata) {
         const body = {};
@@ -32,7 +32,7 @@ class ChromaDbClient {
         return this.request(`/collections/${id}/update`, { method: 'POST', body: JSON.stringify(body) });
     }
     async count(id) { return this.request(`/collections/${id}/count`, { method: 'POST' }); }
-    
+
     async items(name, limit = 10, offset = 0) {
         return this.request(`/collections/${name}/items`, {
             method: 'POST',

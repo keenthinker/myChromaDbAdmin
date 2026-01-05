@@ -38,13 +38,14 @@ app.get('/collections/list', async (req, res) => {
 });
 
 app.post('/collections/:name/items', async (req, res) => {
-    try {
-        const { limit, offset } = req.body;
-        const collectionItems = await chroma.listCollectionItems(req.params.name, limit, offset);
-        res.json(collectionItems);
-    } catch (err) {
-        res.redirect('/?error=' + encodeURIComponent(err.message));
-    }
+    const { limit, offset } = req.body;
+    const collectionItems = await chroma.listCollectionItems(req.params.name, limit, offset);
+    res.json(collectionItems);
+});
+
+app.delete('/collections/:name/delete', async (req, res) => {
+    await chroma.deleteCollection(req.params.name);
+    res.json({ success: true });
 });
 
 // global error handler

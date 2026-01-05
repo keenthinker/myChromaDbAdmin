@@ -4,11 +4,13 @@ function app() {
         collections: [],
         currentCollection: null,
         documents: [],
+        version: "",
 
         async init() {
             client = new ChromaDbClient();
             const heartbeat = await client.heartbeat();
             console.log(`🩷 ${heartbeat}`);
+            this.version = await client.version();
             this.collections = await client.listCollections();
         },
 
@@ -28,5 +30,13 @@ function app() {
 
             this.view = 'collection';
         },
+
+        async deleteCollection(col) {
+            if (confirm(`Delete collection ${col._name}? This action cannot be undone.`)) {
+                await client.deleteCollection(col._name);
+                this.collections = await client.listCollections();
+                this.view = 'dashboard';
+            }
+        }
     }
 }

@@ -31,4 +31,8 @@ export default class ChromaDb {
         });
         return collectionInfo;
     }
+
+    async deleteCollection(collectionName) {
+        return await client.deleteCollection({ name: collectionName });
+    }
 }
