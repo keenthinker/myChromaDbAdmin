@@ -1,6 +1,6 @@
 # myChromaDbAdmin
 
-**Simple user-friendly Chroma database administration webpage.**
+**Simple user-friendly Chroma database administration WebUI.**
 
 ## Disclaimer
 This is an independent personal project not affiliated with or sponsored by [Chroma](https://www.trychroma.com/).

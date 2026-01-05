@@ -1,13 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>myChromaDbAdmin</title>
+    <!-- TODO add Tailwindcss; this is for testing purposes only -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Custom chroma color -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        chroma: {
+                            500: '#7c3aed',
+                            600: '#6d28d9',
+                            700: '#5b21b6',
+                            900: '#2e1065'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script defer src="/js/chroma.js"></script>
+    <script defer src="/js/client.js"></script>
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body>
-    <div>
-        Content goes here. 🙂
+
+<body class="bg-gray-100 h-screen overflow-hidden" x-data="app()">
+    <div class="flex h-full">
+        <!-- sidebar -->
+        <aside class="w-64 bg-slate-900 text-slate-200 flex flex-col">
+            <div class="px-4 py-4 border-b border-slate-800">
+                <h1 class="text-lg font-bold tracking-wide">
+                    <a href="/" @click.prevent="showDashboard()">myChromaDbAdmin</a>
+                </h1>
+                <p class="text-xs text-slate-400">Chroma Vector Store Manager</p>
+            </div>
+
+            <div class="flex-1 overflow-auto py-2">
+                <div class="flex items-center justify-between px-4 mb-2">
+                    <span class="text-xs uppercase text-slate-400">Collections</span>
+                    <button @click="createCollection()" class="text-xs text-chroma-400 hover:text-chroma-300">
+                        + New
+                    </button>
+                </div>
+
+                <div class="space-y-1">
+                    <template x-for="col in collections" :key="col.id">
+                        <div @click="openCollection(col)"
+                            class="px-4 py-2 mx-2 rounded-md cursor-pointer hover:bg-slate-800" x-text="col._name">
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <div class="px-4 py-3 border-t border-slate-800 text-xs text-slate-400">
+                Version x.y.z
+            </div>
+        </aside>
+
+        <!-- content -->
+        <main class="flex-1 overflow-hidden">
+            <div class="h-full overflow-auto">
+                <!-- Dashboard -->
+                <template x-if="view === 'dashboard'">
+                    <div class="p-8">
+                        <h1 class="text-3xl font-bold">Dashboard</h1>
+                        <p class="text-gray-500 mt-2">
+                            Collections: <span x-text="collections.length"></span>
+                        </p>
+                    </div>
+                </template>
+
+                <!-- Collection View -->
+                <template x-if="view === 'collection'">
+                    <div class="p-6">
+                        <h1 class="text-2xl font-bold" x-text="currentCollection._name"></h1>
+
+                        <button class="mt-4 bg-chroma-600 text-white px-3 py-1 rounded" @click="openDocumentEditor()">
+                            Add Document
+                        </button>
+
+                        <table class="mt-6 w-full border bg-white">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-2 text-left">ID</th>
+                                    <th class="px-4 py-2 text-left">Document</th>
+                                    <th class="px-4 py-2 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="doc in documents" :key="doc.id">
+                                    <tr class="border-t">
+                                        <td class="px-4 py-2 font-mono" x-text="doc.id"></td>
+                                        <td class="px-4 py-2 truncate" x-text="doc.document"></td>
+                                        <td class="px-4 py-2 text-right">
+                                            <button @click="openDocumentEditor(doc)" class="text-blue-600">
+                                                Edit
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+
+            </div>
+        </main>
     </div>
 </body>
+
 </html>
