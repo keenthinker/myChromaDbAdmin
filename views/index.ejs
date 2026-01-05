@@ -100,46 +100,94 @@
                             <div>
                                 <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
                                     <span x-text="currentCollection._name"></span>
-                                    <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-sm font-normal" x-text="itemsCount(currentCollection)"></span>
+                                    <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-sm font-normal"
+                                        x-text="itemsCount(currentCollection)"></span>
                                 </h1>
                                 <p class="text-xs text-gray-400 font-mono mt-1" x-text="currentCollection.id"></p>
                             </div>
                             <div class="flex gap-2">
-                                <button id="addDocBtn"
-                                    @click="addDocument()"
+                                <button id="addDocBtn" @click="addDocument()"
                                     class="bg-chroma-600 text-white px-3 py-1.5 rounded text-sm hover:bg-chroma-500">Add
                                     Document</button>
-                                <button id="renameColBtn"
-                                    @click="editCollection(currentCollection)"
+                                <button id="renameColBtn" @click="editCollection(currentCollection)"
                                     class="bg-blue-100 border border-blue-600 text-blue-600 px-3 py-1.5 rounded text-sm hover:text-blue-800">Edit</button>
-                                <button id="deleteColBtn"
-                                    @click="deleteCollection(currentCollection)"
+                                <button id="deleteColBtn" @click="deleteCollection(currentCollection)"
                                     class="bg-red-100 border border-red-600 text-red-600 px-3 py-1.5 rounded text-sm hover:text-red-800">Delete</button>
                             </div>
                         </div>
 
-                        <table class="mt-6 w-full border bg-white">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-2 text-left">ID</th>
-                                    <th class="px-4 py-2 text-left">Document</th>
-                                    <th class="px-4 py-2 text-right">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <template x-for="doc in documents" :key="doc.id">
-                                    <tr class="border-t">
-                                        <td class="px-4 py-2 font-mono" x-text="doc.id"></td>
-                                        <td class="px-4 py-2 truncate" x-text="doc.document"></td>
-                                        <td class="px-4 py-2 text-right">
-                                            <button @click="openDocumentEditor(doc)" class="text-blue-600">
-                                                Edit
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
+                        <div
+                            class="flex-1 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
+                            <div class="overflow-auto flex-1">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50 sticky top-0">
+                                        <tr>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                                ID</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                                Document</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                                Metadata</th>
+                                            <th
+                                                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+                                                Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-gray-200">
+                                        <template x-for="doc in documents" :key="doc.id">
+                                            <tr class="hover:bg-gray-50">
+                                                <td class="px-6 py-4 font-mono text-sm" x-text="doc.id"></td>
+                                                <td class="px-6 py-4 text-sm truncate max-w-xs">
+                                                    <template x-if="doc.document">
+                                                        <span x-text="doc.document"></span>
+                                                    </template>
+                                                    <template x-if="!doc.document">
+                                                        <span class="text-gray-300">null</span>
+                                                    </template>
+                                                </td>
+                                                <td class="px-6 py-4 font-mono text-xs text-gray-500 truncate max-w-xs">
+                                                    <template x-if="doc.document">
+                                                        <span x-text="JSON.stringify(doc.metadata)"></span>
+                                                    </template>
+                                                    <template x-if="!doc.document">
+                                                        <span class="text-gray-300">{}</span>
+                                                    </template>
+                                                </td>
+                                                <td class="px-6 py-4 text-right">
+                                                    <button
+                                                        @click="openItemEditor(doc)"    
+                                                        class="border border-blue-600 text-blue-600 hover:text-blue-800 text-sm edit-item-btn bg-blue-100 rounded py-1 px-2"
+                                                        :data-id="doc.id">Edit</button>
+                                                    <button
+                                                        @click="deleteItem(doc)"
+                                                        class="border border-red-600 text-red-600 hover:text-red-800 text-sm delete-item-btn bg-red-100 rounded py-1 px-2"
+                                                        :data-id="doc.id">Delete</button>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                        <template x-if="documents.length === 0">
+                                            <tr>
+                                                <td colspan="4" class="px-6 py-8 text-center text-gray-400">No records
+                                                    found</td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div
+                                class="bg-gray-50 px-6 py-3 border-t border-gray-200 flex justify-between items-center text-sm">
+                                <span x-text="footerTableItemsPagingText"></span>
+                                <div class="space-x-2">
+                                    <button id="prevBtn" class="disabled:opacity-50 text-chroma-600 font-medium"
+                                        @click="footerTableItemsPagingPreviousClick(currentCollection)"
+                                        :disabled="footerTableItemsPagingPreviousDisabled">Previous</button>
+                                    <button id="nextBtn" class="disabled:opacity-50 text-chroma-600 font-medium"
+                                        @click="footerTableItemsPagingNextClick(currentCollection)"
+                                        :disabled="footerTableItemsPagingNextDisabled">Next</button>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </template>
 

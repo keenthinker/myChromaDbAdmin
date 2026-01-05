@@ -5,6 +5,14 @@ function app() {
         currentCollection: null,
         documents: [],
         version: "",
+        currentOffset: 0,
+        footerTableItemsPagingText: "",
+        footerTableItemsPagingPreviousDisabled: true,
+        footerTableItemsPagingNextDisabled: true,
+
+        async LIMIT() {
+            return 10;
+        },
 
         async init() {
             client = new ChromaDbClient();
@@ -19,8 +27,19 @@ function app() {
         },
 
         async openCollection(col) {
+            if (col._name !== this.currentCollection?._name) {
+                this.currentOffset = 0;
+            }
+
             this.currentCollection = col;
-            const data = await client.items(col._name, 50, 0);
+            
+            const LIMIT = await this.LIMIT();
+            const count = await client.countItems(col._name);
+            const data = await client.items(col._name, LIMIT, this.currentOffset);
+            
+            this.footerTableItemsText = await this.footerTableItems(col);
+            this.footerTableItemsPagingPreviousDisabled = this.currentOffset === 0;
+            this.footerTableItemsPagingNextDisabled = (this.currentOffset + LIMIT) >= count;
 
             this.documents = data.ids.map((id, i) => ({
                 id,
@@ -50,6 +69,27 @@ function app() {
 
         async addDocument() {
             console.log("Add document");
-        }
+        },
+
+        async footerTableItems(col) {
+            const count = await client.countItems(col._name);
+            const LIMIT = await this.LIMIT();
+            this.footerTableItemsPagingText = `Showing ${this.currentOffset + 1}-${Math.min(this.currentOffset + LIMIT, count)} of ${count}`;
+            return this.footerTableItemsPagingText;
+        },
+
+        async footerTableItemsPagingPreviousClick(col) {
+            const LIMIT = await this.LIMIT();
+            this.currentOffset -= LIMIT;
+            this.footerTableItemsPagingText = await this.footerTableItems(col);
+            this.openCollection(col);
+        },
+
+        async footerTableItemsPagingNextClick(col) {
+            const LIMIT = await this.LIMIT();
+            this.currentOffset += LIMIT;            
+            this.footerTableItemsPagingText = await this.footerTableItems(col);
+            this.openCollection(col);
+        },
     }
 }
