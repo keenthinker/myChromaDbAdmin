@@ -35,4 +35,10 @@ export default class ChromaDb {
     async deleteCollection(collectionName) {
         return await client.deleteCollection({ name: collectionName });
     }
+
+    async collectionItemsCount(collectionName) {
+        const collection = await client.getCollection({ name: collectionName });
+        const countInfo = await collection.count();
+        return countInfo;
+    }
 }

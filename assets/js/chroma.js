@@ -31,7 +31,7 @@ class ChromaDbClient {
         if (newMetadata) body.metadata = newMetadata;
         return this.request(`/collections/${id}/update`, { method: 'POST', body: JSON.stringify(body) });
     }
-    async count(id) { return this.request(`/collections/${id}/count`, { method: 'POST' }); }
+    async countItems(name) { return this.request(`/collections/${name}/items-count`, { method: 'GET' }); }
 
     async items(name, limit = 10, offset = 0) {
         return this.request(`/collections/${name}/items`, {

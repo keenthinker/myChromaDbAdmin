@@ -37,6 +37,19 @@ function app() {
                 this.collections = await client.listCollections();
                 this.view = 'dashboard';
             }
+        },
+
+        async editCollection(col) {
+            console.log("Edit collection", col._name);
+        },
+
+        async itemsCount(col) {
+            const count = await client.countItems(col._name);
+            return `${count} items`;
+        },
+
+        async addDocument() {
+            console.log("Add document");
         }
     }
 }
