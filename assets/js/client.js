@@ -100,19 +100,15 @@ function app() {
 
         async saveCollectionEdit() {
             const edit = structuredClone(Alpine.raw(this.currentCollectionEdit));
-            console.log(`Save collection edit: isNew=${edit.isNew}`);
-            // const metadataObj = {};
-            // for (const [key, value] of this.currentCollection.metadata) {
-            //     if (key.trim() !== "") {
-            //         metadataObj[key] = value;
-            //     }
-            // }
-            // if (edit.isNew) {
-            //     await client.createCollection(edit.name, { hnsw: { space: edit.space } }, metadataObj);
-            // } else {
-            //     await client.updateCollection(edit.name, null, metadataObj);
-            // }
-            //this.collections = await client.listCollections();
+            if (edit.isNew) {
+                await client.createCollection(edit.name, { hnsw: { space: edit.space } }, edit.metadata);
+            } else {
+                await client.updateCollection(this.currentCollection._name, edit.name, edit.metadata);
+            }
+            this.collections = await client.listCollections();
+            const updatedCollection = this.collections.find(c => c._name === edit.name);
+            this.currentCollection = updatedCollection;
+            await this.openCollection(this.currentCollection);
         },
 
         async itemsCount(col) {

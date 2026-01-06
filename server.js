@@ -37,6 +37,12 @@ app.get('/collections/list', async (req, res) => {
     res.json(collections);
 });
 
+app.post('/collections/add', async (req, res) => {
+    const { name, configuration, metadata } = req.body;
+    await chroma.createCollection(name, configuration, metadata);
+    res.json({ success: true });
+});
+
 app.get('/collections/:name/items-count', async (req, res) => {
     const count = await chroma.collectionItemsCount(req.params.name);
     res.json(count);
@@ -48,6 +54,11 @@ app.post('/collections/:name/items', async (req, res) => {
     res.json(collectionItems);
 });
 
+app.post('/collections/:name/update', async (req, res) => {
+    await chroma.updateCollection(req.params.name, req.body.newName, req.body.metadata);
+    res.json({ success: true });
+});
+
 app.delete('/collections/:name/delete', async (req, res) => {
     await chroma.deleteCollection(req.params.name);
     res.json({ success: true });
@@ -55,7 +66,7 @@ app.delete('/collections/:name/delete', async (req, res) => {
 
 // 404 handler
 app.use((req, res, next) => {
-  res.status(404).render('error', { error: 'Not Found' });
+    res.status(404).render('error', { error: 'Not Found' });
 });
 
 // global error handler

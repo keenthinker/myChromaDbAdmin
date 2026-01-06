@@ -228,7 +228,8 @@
                                     </label>
 
                                     <select id="collectionSpaceSelect" x-model="currentCollectionEdit.space"
-                                        class="w-full border border-gray-300 rounded px-3 py-2 bg-white text-sm focus:outline-none focus:ring-1 focus:ring-chroma-500">
+                                        class="w-full border border-gray-300 rounded px-3 py-2 bg-white text-sm focus:outline-none focus:ring-1 focus:ring-chroma-500"
+                                        :disabled="!currentCollectionEdit.isNew">
                                         <option value="cosine">cosine (cosine similarity)</option>
                                         <option value="l2">l2 (squared l2)</option>
                                         <option value="ip">ip (inner product)</option>

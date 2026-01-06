@@ -32,6 +32,32 @@ export default class ChromaDb {
         return collectionInfo;
     }
 
+    async createCollection(collectionName, configuration, metadata) {
+        return await client.createCollection({
+            name: collectionName,
+            configuration: configuration,
+            metadata: metadata
+        });
+    }
+
+    // Update name or metadata
+    async updateCollection(collectionName, newCollectionName, newMetadata) {
+
+        function isNotEmpty(obj) {
+            return obj &&
+                typeof obj === 'object' &&
+                !Array.isArray(obj) &&
+                Object.keys(obj).length > 0;
+        }
+
+        const collection = await client.getCollection({ name: collectionName });
+        const collectionConfiguration = { name: newCollectionName };
+        if (isNotEmpty(newMetadata)) {
+            collectionConfiguration.metadata = newMetadata;
+        }
+        return await collection.modify(collectionConfiguration);
+    }
+
     async deleteCollection(collectionName) {
         return await client.deleteCollection({ name: collectionName });
     }
