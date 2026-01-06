@@ -36,7 +36,7 @@
         <aside class="w-64 bg-slate-900 text-slate-200 flex flex-col">
             <div class="px-4 py-4 border-b border-slate-800">
                 <h1 class="text-lg font-bold tracking-wide">
-                    <a href="/" @click.prevent="showDashboard()">myChromaDbAdmin</a>
+                    <a href="/" @click.prevent="showDashboard">myChromaDbAdmin</a>
                 </h1>
                 <p class="text-xs text-slate-400">Chroma Vector Store Manager</p>
             </div>
@@ -44,7 +44,7 @@
             <div class="flex-1 overflow-auto py-2">
                 <div class="flex items-center justify-between px-4 mb-2">
                     <span class="text-xs uppercase text-slate-400">Collections</span>
-                    <button @click="createCollection()" class="text-xs text-chroma-400 hover:text-chroma-300">
+                    <button @click="editCollection(undefined)" class="text-xs text-chroma-400 hover:text-chroma-300">
                         + New
                     </button>
                 </div>
@@ -104,15 +104,18 @@
                                         x-text="itemsCount(currentCollection)"></span>
                                 </h1>
                                 <p class="text-xs text-gray-400 font-mono mt-1" x-text="currentCollection.id"></p>
+                                <button id="backBtn" @click="showDashboard" class="text-sm text-chroma-600 hover:text-chroma-500">← Back</button>
                             </div>
                             <div class="flex gap-2">
                                 <button id="addDocBtn" @click="addDocument()"
                                     class="bg-chroma-600 text-white px-3 py-1.5 rounded text-sm hover:bg-chroma-500">Add
                                     Document</button>
                                 <button id="renameColBtn" @click="editCollection(currentCollection)"
-                                    class="bg-blue-100 border border-blue-600 text-blue-600 px-3 py-1.5 rounded text-sm hover:text-blue-800">Edit</button>
+                                    class="bg-blue-100 border border-blue-600 text-blue-600 px-3 py-1.5 rounded text-sm hover:text-blue-800">Edit
+                                    Collection</button>
                                 <button id="deleteColBtn" @click="deleteCollection(currentCollection)"
-                                    class="bg-red-100 border border-red-600 text-red-600 px-3 py-1.5 rounded text-sm hover:text-red-800">Delete</button>
+                                    class="bg-red-100 border border-red-600 text-red-600 px-3 py-1.5 rounded text-sm hover:text-red-800">Delete
+                                    Collection</button>
                             </div>
                         </div>
 
@@ -154,12 +157,10 @@
                                                     </template>
                                                 </td>
                                                 <td class="px-6 py-4 text-right">
-                                                    <button
-                                                        @click="openItemEditor(doc)"    
+                                                    <button @click="openItemEditor(doc)"
                                                         class="border border-blue-600 text-blue-600 hover:text-blue-800 text-sm edit-item-btn bg-blue-100 rounded py-1 px-2"
-                                                        :data-id="doc.id">Edit</button>
-                                                    <button
-                                                        @click="deleteItem(doc)"
+                                                        :data-id="doc.id">View / Edit</button>
+                                                    <button @click="deleteItem(doc)"
                                                         class="border border-red-600 text-red-600 hover:text-red-800 text-sm delete-item-btn bg-red-100 rounded py-1 px-2"
                                                         :data-id="doc.id">Delete</button>
                                                 </td>
@@ -188,6 +189,105 @@
                             </div>
                         </div>
 
+                    </div>
+                </template>
+
+                <!-- Edit collection view -->
+                <template x-if="view === 'collectionEdit'">
+                    <div class="p-6 h-full flex flex-col">
+                        <!-- header -->
+                        <div class="mb-6">
+                            <button id="backBtn" @click="openCollection(currentCollection)" class="text-sm text-chroma-600 hover:text-chroma-500">
+                                ← Back
+                            </button>
+                            <h1 class="text-2xl font-bold text-gray-900 mt-1">
+                                <span x-text="currentCollectionEdit.headerText"></span>
+                            </h1>
+                            <p class="text-xs text-gray-400 font-mono mt-1">
+                                <span x-text="currentCollectionEdit.name"></span>
+                            </p>
+                        </div>
+                        <!-- form -->
+                        <form id="collectionForm" class="flex-1 overflow-auto w-full space-y-5">
+                            <div class="max-w-5xl mx-auto space-y-5"><!-- remove to have full width -->
+                                <!-- Name -->
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">
+                                        Collection Name
+                                    </label>
+                                    <input id="collectionNameInput" type="text" value="${name}"
+                                        placeholder="collection_name"
+                                        class="w-full border border-gray-300 rounded px-3 py-2" required
+                                        x-model="currentCollectionEdit.name" />
+                                </div>
+
+                                <!-- Vector Space -->
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">
+                                        Vector Space
+                                    </label>
+
+                                    <select id="collectionSpaceSelect" x-model="currentCollectionEdit.space"
+                                        class="w-full border border-gray-300 rounded px-3 py-2 bg-white text-sm focus:outline-none focus:ring-1 focus:ring-chroma-500">
+                                        <option value="cosine">cosine (cosine similarity)</option>
+                                        <option value="l2">l2 (squared l2)</option>
+                                        <option value="ip">ip (inner product)</option>
+                                    </select>
+
+                                    <p class="text-xs text-gray-400 mt-1">
+                                        Distance metric used by the HNSW index
+                                    </p>
+                                </div>
+
+                                <!-- Metadata -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-1">
+                                        <label class="block text-xs font-medium text-gray-600">
+                                            Metadata
+                                        </label>
+                                        <button type="button" id="addMetaRowBtn"
+                                            @click="addMetadata()"
+                                            class="text-xs text-chroma-600 hover:text-chroma-500">
+                                            + Add field
+                                        </button>
+                                    </div>
+
+                                    <div id="editMetaList"
+                                        class="space-y-2 bg-gray-50 border border-gray-200 rounded p-3">
+                                        <template x-for="[key, val] in Object.entries(currentCollectionEdit.metadata)" :key="key">
+                                            <div class="flex gap-2 items-center">
+                                                <input type="text" placeholder="key"
+                                                    :value="key"
+                                                    @change="updateMetadataKey(key, $event.target.value)"
+                                                    class="meta-key flex-1 border border-gray-300 rounded px-2 py-1 text-xs font-mono" />
+                                                <input type="text" placeholder="value"
+                                                    x-model="currentCollectionEdit.metadata[key]"
+                                                    class="meta-value flex-1 border border-gray-300 rounded px-2 py-1 text-xs font-mono" />
+                                                <button type="button"
+                                                    @click="removeMetadata(key)"
+                                                    class="remove-meta text-red-500 hover:text-red-700 text-xs px-1">
+                                                    ✕
+                                                </button>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="flex gap-2 pt-4">
+                                    <button type="submit"
+                                        @click="saveCollectionEdit"
+                                        class="bg-chroma-600 text-white px-4 py-2 rounded text-sm hover:bg-chroma-500"
+                                        x-text="currentCollectionEdit.buttonText">
+                                    </button>
+                                    <button type="button" id="cancelBtn"
+                                        @click="openCollection(currentCollection)"
+                                        class="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div><!-- remove to have full width -->
+                        </form>
                     </div>
                 </template>
 
