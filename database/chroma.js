@@ -33,11 +33,23 @@ export default class ChromaDb {
     }
 
     async createCollection(collectionName, configuration, metadata) {
-        return await client.createCollection({
+
+        function isNotEmpty(obj) {
+            return obj &&
+                typeof obj === 'object' &&
+                !Array.isArray(obj) &&
+                Object.keys(obj).length > 0;
+        }
+
+        let createConfiguration = {
             name: collectionName,
-            configuration: configuration,
-            metadata: metadata
-        });
+            configuration: configuration
+        }
+
+        if (isNotEmpty(metadata)) {
+            createConfiguration.metadata = metadata;
+        }
+        return await client.createCollection(createConfiguration);
     }
 
     // Update name or metadata
