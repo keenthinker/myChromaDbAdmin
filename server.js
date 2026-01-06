@@ -53,6 +53,11 @@ app.delete('/collections/:name/delete', async (req, res) => {
     res.json({ success: true });
 });
 
+// 404 handler
+app.use((req, res, next) => {
+  res.status(404).render('error', { error: 'Not Found' });
+});
+
 // global error handler
 app.use((err, req, res, next) => {
     console.log(err.stack);
