@@ -67,4 +67,42 @@ export default class ChromaDb {
         const countInfo = await collection.count();
         return countInfo;
     }
+
+    async getEmbeddings(collectionName, documentId) {
+        const collection = await client.getCollection({ name: collectionName });
+        const result = await collection.get({
+            ids: [documentId],
+            include: ['embeddings']
+        });
+        return result;
+    }
+
+    async upsertItems(collectionName, ids, documents, metadatas) {
+
+        function isNotEmpty(obj) {
+            return obj &&
+                typeof obj === 'object' &&
+                !Array.isArray(obj) &&
+                Object.keys(obj).length > 0;
+        }
+
+        const collection = await client.getCollection({ name: collectionName });
+        let data = {
+            ids: ids,
+            documents: documents
+        };
+        for (let i = 0; i < metadatas.length; i++) {
+            const metadata = metadatas[i];
+            if (isNotEmpty(metadata)) {
+                data = { ...data, metadatas: metadatas };
+                break;
+            }
+        };
+        return await collection.upsert(data);
+    }
+
+    async deleteItems(collectionName, ids) {
+        const collection = await client.getCollection({ name: collectionName });
+        return await collection.delete({ ids: ids });
+    }
 }

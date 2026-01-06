@@ -39,20 +39,27 @@ class ChromaDbClient {
             body: JSON.stringify({ limit, offset, include: ['embeddings', 'documents', 'metadatas'] })
         });
     }
+
+    async embeddings(name, documentId) {
+        return this.request(`/collections/${name}/embeddings/${documentId}`, {
+            method: 'POST'
+        });
+    }
+
     async add(id, ids, documents, metadatas) {
         return this.request(`/collections/${id}/add`, {
             method: 'POST',
             body: JSON.stringify({ ids, documents, metadatas })
         });
     }
-    async upsertItems(id, ids, documents, metadatas) {
-        return this.request(`/collections/${id}/upsert`, {
+    async upsertItems(name, ids, documents, metadatas) {
+        return this.request(`/collections/${name}/upsert`, {
             method: 'POST',
             body: JSON.stringify({ ids, documents, metadatas })
         });
     }
-    async deleteItems(id, ids) {
-        return this.request(`/collection/${id}/delete`, {
+    async deleteItems(name, ids) {
+        return this.request(`/collections/${name}/items-delete`, {
             method: 'POST',
             body: JSON.stringify({ ids })
         });

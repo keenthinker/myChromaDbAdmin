@@ -104,10 +104,11 @@
                                         x-text="itemsCount(currentCollection)"></span>
                                 </h1>
                                 <p class="text-xs text-gray-400 font-mono mt-1" x-text="currentCollection.id"></p>
-                                <button id="backBtn" @click="showDashboard" class="text-sm text-chroma-600 hover:text-chroma-500">← Back</button>
+                                <button id="backBtn" @click="showDashboard"
+                                    class="text-sm text-chroma-600 hover:text-chroma-500">← Back</button>
                             </div>
                             <div class="flex gap-2">
-                                <button id="addDocBtn" @click="addDocument()"
+                                <button id="addDocBtn" @click="editDocument(null)"
                                     class="bg-chroma-600 text-white px-3 py-1.5 rounded text-sm hover:bg-chroma-500">Add
                                     Document</button>
                                 <button id="renameColBtn" @click="editCollection(currentCollection)"
@@ -157,10 +158,10 @@
                                                     </template>
                                                 </td>
                                                 <td class="px-6 py-4 text-right">
-                                                    <button @click="openItemEditor(doc)"
+                                                    <button @click="editDocument(doc)"
                                                         class="border border-blue-600 text-blue-600 hover:text-blue-800 text-sm edit-item-btn bg-blue-100 rounded py-1 px-2"
                                                         :data-id="doc.id">View / Edit</button>
-                                                    <button @click="deleteItem(doc)"
+                                                    <button @click="deleteDocument(doc)"
                                                         class="border border-red-600 text-red-600 hover:text-red-800 text-sm delete-item-btn bg-red-100 rounded py-1 px-2"
                                                         :data-id="doc.id">Delete</button>
                                                 </td>
@@ -192,12 +193,13 @@
                     </div>
                 </template>
 
-                <!-- Edit collection view -->
+                <!-- Add or edit collection view -->
                 <template x-if="view === 'collectionEdit'">
                     <div class="p-6 h-full flex flex-col">
                         <!-- header -->
                         <div class="mb-6">
-                            <button id="backBtn" @click="openCollection(currentCollection)" class="text-sm text-chroma-600 hover:text-chroma-500">
+                            <button id="backBtn" @click="openCollection(currentCollection)"
+                                class="text-sm text-chroma-600 hover:text-chroma-500">
                                 ← Back
                             </button>
                             <h1 class="text-2xl font-bold text-gray-900 mt-1">
@@ -246,8 +248,7 @@
                                         <label class="block text-xs font-medium text-gray-600">
                                             Metadata
                                         </label>
-                                        <button type="button" id="addMetaRowBtn"
-                                            @click="addMetadata()"
+                                        <button type="button" id="addMetaRowBtn" @click="addMetadata()"
                                             class="text-xs text-chroma-600 hover:text-chroma-500">
                                             + Add field
                                         </button>
@@ -255,17 +256,16 @@
 
                                     <div id="editMetaList"
                                         class="space-y-2 bg-gray-50 border border-gray-200 rounded p-3">
-                                        <template x-for="[key, val] in Object.entries(currentCollectionEdit.metadata)" :key="key">
+                                        <template x-for="[key, val] in Object.entries(currentCollectionEdit.metadata)"
+                                            :key="key">
                                             <div class="flex gap-2 items-center">
-                                                <input type="text" placeholder="key"
-                                                    :value="key"
+                                                <input type="text" placeholder="key" :value="key"
                                                     @change="updateMetadataKey(key, $event.target.value)"
                                                     class="meta-key flex-1 border border-gray-300 rounded px-2 py-1 text-xs font-mono" />
                                                 <input type="text" placeholder="value"
                                                     x-model="currentCollectionEdit.metadata[key]"
                                                     class="meta-value flex-1 border border-gray-300 rounded px-2 py-1 text-xs font-mono" />
-                                                <button type="button"
-                                                    @click="removeMetadata(key)"
+                                                <button type="button" @click="removeMetadata(key)"
                                                     class="remove-meta text-red-500 hover:text-red-700 text-xs px-1">
                                                     ✕
                                                 </button>
@@ -276,13 +276,11 @@
 
                                 <!-- Actions -->
                                 <div class="flex gap-2 pt-4">
-                                    <button type="button"
-                                        @click="saveCollectionEdit"
+                                    <button type="button" @click="saveCollectionEdit"
                                         class="bg-chroma-600 text-white px-4 py-2 rounded text-sm hover:bg-chroma-500"
                                         x-text="currentCollectionEdit.buttonText">
                                     </button>
-                                    <button type="button" id="cancelBtn"
-                                        @click="openCollection(currentCollection)"
+                                    <button type="button" id="cancelBtn" @click="openCollection(currentCollection)"
                                         class="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50">
                                         Cancel
                                     </button>
@@ -292,6 +290,101 @@
                     </div>
                 </template>
 
+                <!-- Add or edit document view -->
+                <template x-if="view === 'documentEdit'">
+                    <div class="p-6 h-full flex flex-col">
+                        <!-- Header -->
+                        <div class="flex items-center justify-between mb-6">
+                            <div>
+                                <button id="backToListBtn" @click="openCollection(currentCollection)"
+                                    class="text-sm text-chroma-600 hover:text-chroma-500 mb-1">
+                                    ← Back to list
+                                </button>
+                                <h1 class="text-2xl font-bold text-gray-900">
+                                    <span x-text="currentDocumentEdit.headerText"></span>
+                                </h1>
+                                <p class="text-xs text-gray-400 font-mono mt-1">
+                                    Collection: <span x-text="currentCollection._name"></span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Form -->
+                        <form id="editDocForm" class="flex-1 overflow-auto w-full space-y-5">
+                            <div class="max-w-5xl mx-auto space-y-5"><!-- remove to have full width -->
+                                <!-- ID -->
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">ID</label>
+                                    <input id="editDocId" type="text" x-model="currentDocumentEdit.id"
+                                        placeholder="Document ID"
+                                        class="w-full border border-gray-300 rounded px-3 py-2 font-mono text-sm"
+                                        required />
+                                </div>
+
+                                <!-- Document -->
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Document Content</label>
+                                    <textarea id="editDocContent" rows="4" placeholder="Document content"
+                                        class="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+                                        x-model="currentDocumentEdit.document"></textarea>
+                                </div>
+
+                                <!-- Metadata -->
+                                <div>
+                                    <div class="flex items-center justify-between mb-1">
+                                        <label class="block text-xs font-medium text-gray-600">Metadata</label>
+                                        <button type="button" id="addMetaRowBtn" @click="addMetadataDocument()"
+                                            class="text-xs text-chroma-600 hover:text-chroma-500">
+                                            + Add field
+                                        </button>
+                                    </div>
+
+                                    <div id="editMetaList"
+                                        class="space-y-2 bg-gray-50 border border-gray-200 rounded p-3">
+                                        <template x-for="[key, val] in Object.entries(currentDocumentEdit.metadata)"
+                                            :key="key">
+                                            <div class="flex gap-2 items-center">
+                                                <input type="text" :value="key" placeholder="key"
+                                                    @change="updateMetadataKeyDocument(key, $event.target.value)"
+                                                    class="meta-key flex-1 border border-gray-300 rounded px-2 py-1 text-xs font-mono" />
+                                                <input type="text" placeholder="value"
+                                                    x-model="currentDocumentEdit.metadata[key]"
+                                                    class="meta-value flex-1 border border-gray-300 rounded px-2 py-1 text-xs font-mono" />
+                                                <button type="button" @click="removeMetadataDocument(key)"
+                                                    class="remove-meta text-red-500 hover:text-red-700 text-xs px-1">
+                                                    ✕
+                                                </button>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </div>
+
+                                <!-- Embeddings -->
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">
+                                        <span x-text="currentDocumentEdit.embeddingsText"></span>
+                                    </label>
+                                    <textarea rows="3" readonly
+                                        class="w-full border border-gray-200 rounded px-3 py-2 font-mono text-xs text-gray-500 bg-gray-100"
+                                        :value="currentDocumentEdit.embeddings">
+                                        </textarea>
+                                </div>
+
+                                <!-- Actions -->
+                                <div class="flex gap-2 pt-4">
+                                    <button type="button" @click="saveDocumentEdit"
+                                        class="bg-chroma-600 text-white px-4 py-2 rounded text-sm hover:bg-chroma-500">
+                                        <span x-text="currentDocumentEdit.buttonText"></span>
+                                    </button>
+                                    <button type="button" id="cancelEditBtn" @click="openCollection(currentCollection)"
+                                        class="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50">
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div><!-- remove to have full width -->
+                        </form>
+                    </div>
+                </template>
             </div>
         </main>
     </div>

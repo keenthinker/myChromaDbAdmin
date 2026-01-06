@@ -59,9 +59,25 @@ app.post('/collections/:name/update', async (req, res) => {
     res.json({ success: true });
 });
 
+app.post('/collections/:name/upsert', async (req, res) => {
+    const { ids, documents, metadatas } = req.body;
+    await chroma.upsertItems(req.params.name, ids, documents, metadatas);
+    res.json({ success: true });
+});
+
+app.post('/collections/:name/items-delete', async (req, res) => {
+    await chroma.deleteItems(req.params.name, req.body.ids);
+    res.json({ success: true });
+});
+
 app.delete('/collections/:name/delete', async (req, res) => {
     await chroma.deleteCollection(req.params.name);
     res.json({ success: true });
+});
+
+app.post('/collections/:name/embeddings/:documentid', async (req, res) => {
+    const embeddings = await chroma.getEmbeddings(req.params.name, req.params.documentid);
+    res.json(embeddings);
 });
 
 // 404 handler

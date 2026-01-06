@@ -10,6 +10,7 @@ function app() {
         footerTableItemsPagingPreviousDisabled: true,
         footerTableItemsPagingNextDisabled: true,
         currentCollectionEdit: null,
+        currentDocumentEdit: null,
 
         async LIMIT() {
             return 10;
@@ -84,7 +85,6 @@ function app() {
 
         // collection metadata fields handlers
         addMetadata() {
-            console.log("Add metadata");
             const newKey = 'key_' + Date.now();
             this.currentCollectionEdit.metadata[newKey] = '';
         },
@@ -116,8 +116,66 @@ function app() {
             return `${count} items`;
         },
 
-        async addDocument() {
-            console.log("Add document");
+        // document metadata fields handlers
+        addMetadataDocument() {
+            const newKey = 'key_' + Date.now();
+            this.currentDocumentEdit.metadata[newKey] = '';
+        },
+        removeMetadataDocument(key) {
+            //delete this.currentDocumentEdit.metadata[key];
+            /*
+            In ChromaDB, the upsert and update operations perform a shallow merge (also known as a "patch" update) 
+            rather than a full overwrite. This means that sendindg a new metadata object that is missing a field previously stored in the database, 
+            Chroma will keep the old field rather than deleting it.
+            Record metadata fields must be explicitly set to null to delete them.
+            Alternative solution: delete the whole record and re-add it with the desired fields only.
+            */
+            this.currentDocumentEdit.metadata[key] = null;
+        },
+        updateMetadataKeyDocument(oldKey, newKey) {
+            if (oldKey === newKey || !newKey) return;
+            // Rename object key: copy value to new key, then delete old
+            this.currentDocumentEdit.metadata[newKey] = this.currentDocumentEdit.metadata[oldKey];
+            delete this.currentDocumentEdit.metadata[oldKey];
+        },
+
+        async editDocument(doc) {
+            const clone = structuredClone(Alpine.raw(doc));
+            this.currentDocumentEdit = {};
+            if (doc) {
+                const documentEmbeddings = await client.embeddings(this.currentCollection._name, clone.id);
+                this.currentDocumentEdit.id = clone.id;
+                this.currentDocumentEdit.document = clone.document;
+                this.currentDocumentEdit.metadata = clone.metadata;
+                this.currentDocumentEdit.isNew = false;
+                this.currentDocumentEdit.headerText = `Edit Document`;
+                this.currentDocumentEdit.buttonText = `Save Changes`;
+                this.currentDocumentEdit.embeddingsText = 'Embeddings (read-only)';
+                this.currentDocumentEdit.embeddings = JSON.stringify(documentEmbeddings.embeddings);
+            } else {
+                this.currentDocumentEdit.id = '';
+                this.currentDocumentEdit.document = '';
+                this.currentDocumentEdit.metadata = {};
+                this.currentDocumentEdit.isNew = true;
+                this.currentDocumentEdit.headerText = `Add Document`;
+                this.currentDocumentEdit.buttonText = `Add Document`;
+                this.currentDocumentEdit.embeddingsText = 'Embeddings (will be generated)';
+                this.currentDocumentEdit.embeddings = JSON.stringify([]);
+            }
+            this.view = 'documentEdit';
+        },
+
+        async saveDocumentEdit() {
+            const edit = structuredClone(Alpine.raw(this.currentDocumentEdit));
+            await client.upsertItems(this.currentCollection._name, [edit.id], [edit.document], [edit.metadata]);
+            await this.openCollection(this.currentCollection);
+        },
+
+        async deleteDocument(doc) {
+            if (confirm(`Delete item ${doc.id}?`)) {
+                await client.deleteItems(this.currentCollection._name, [String(doc.id)]);
+            }
+            await this.openCollection(this.currentCollection);
         },
 
         async footerTableItems(col) {
