@@ -65,7 +65,7 @@ function app() {
                 const clone = structuredClone(Alpine.raw(col));
                 this.currentCollectionEdit = {};
                 this.currentCollectionEdit.name = clone._name;
-                this.currentCollectionEdit.metadata = clone._metadata;
+                this.currentCollectionEdit.metadata = clone._metadata || {};
                 this.currentCollectionEdit.space = clone._configuration.hnsw.space;
                 this.currentCollectionEdit.isNew = false;
                 this.currentCollectionEdit.headerText = `Edit Collection`;
@@ -146,7 +146,7 @@ function app() {
                 const documentEmbeddings = await client.embeddings(this.currentCollection._name, clone.id);
                 this.currentDocumentEdit.id = clone.id;
                 this.currentDocumentEdit.document = clone.document;
-                this.currentDocumentEdit.metadata = clone.metadata;
+                this.currentDocumentEdit.metadata = clone.metadata || {};
                 this.currentDocumentEdit.isNew = false;
                 this.currentDocumentEdit.headerText = `Edit Document`;
                 this.currentDocumentEdit.buttonText = `Save Changes`;
