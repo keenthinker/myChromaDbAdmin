@@ -117,4 +117,11 @@ export default class ChromaDb {
         const collection = await client.getCollection({ name: collectionName });
         return await collection.delete({ ids: ids });
     }
+
+    async collectionExists(collectionName) {
+        const collections = await client.listCollections();
+        collections.forEach(col => console.log(col._name));
+        const exists = collections.some(col => col._name === collectionName);
+        return exists;
+    }
 }

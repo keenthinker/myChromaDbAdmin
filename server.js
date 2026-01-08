@@ -48,6 +48,11 @@ app.get('/collections/:name/items-count', async (req, res) => {
     res.json(count);
 });
 
+app.get('/collections/:name/exists', async (req, res) => {
+    const exists = await chroma.collectionExists(req.params.name);
+    res.json(exists);
+});
+
 app.post('/collections/:name/items', async (req, res) => {
     const { limit, offset } = req.body;
     const collectionItems = await chroma.listCollectionItems(req.params.name, limit, offset);

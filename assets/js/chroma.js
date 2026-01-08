@@ -32,6 +32,7 @@ class ChromaDbClient {
         return this.request(`/collections/${name}/update`, { method: 'POST', body: JSON.stringify(body) });
     }
     async countItems(name) { return this.request(`/collections/${name}/items-count`, { method: 'GET' }); }
+    async collectionExists(name) { return this.request(`/collections/${name}/exists`, { method: 'GET' }); }
 
     async items(name, limit = 10, offset = 0) {
         return this.request(`/collections/${name}/items`, {
