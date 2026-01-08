@@ -67,4 +67,5 @@ class ChromaDbClient {
     }
     async version() { return this.request('/version', { method: 'GET' }); }
     async heartbeat() { return this.request('/heartbeat', { method: 'GET' }); }
+    async packageVersion() { return this.request('/package-version', { method: 'GET' }); }
 }

@@ -1,6 +1,9 @@
 import express from 'express';
 //import helmet from 'helmet';
 import ChromaDb from './database/chroma.js';
+import pkg from './package.json' with { type: 'json' };
+
+const packageVersion = pkg.version;
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -29,6 +32,10 @@ app.get('/heartbeat', async (req, res) => {
 app.get('/version', async (req, res) => {
     const version = await chroma.version();
     res.json(version);
+});
+
+app.get('/package-version', async (req, res) => {
+    res.json(packageVersion);
 });
 
 // - collection handlers

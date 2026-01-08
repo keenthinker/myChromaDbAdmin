@@ -11,6 +11,7 @@ function app() {
         footerTableItemsPagingNextDisabled: true,
         currentCollectionEdit: null,
         currentDocumentEdit: null,
+        packageVersion: "",
 
         async LIMIT() {
             return 10;
@@ -21,6 +22,7 @@ function app() {
             const heartbeat = await client.heartbeat();
             console.log(`🩷 ${heartbeat}`);
             this.version = await client.version();
+            this.packageVersion = await client.packageVersion();
             this.collections = await client.listCollections();
         },
 

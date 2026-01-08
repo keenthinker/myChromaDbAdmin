@@ -69,7 +69,7 @@
             </div>
 
             <div class="px-4 py-3 border-t border-slate-800 text-xs text-slate-400">
-                Version x.y.z
+                Version <span x-text="packageVersion"></span>
             </div>
         </aside>
 
@@ -86,7 +86,7 @@
                                 <p class="text-2xl font-bold" x-text="collections.length"></p>
                             </div>
                             <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
-                                <p class="text-gray-500">Version</p>
+                                <p class="text-gray-500">Database version</p>
                                 <p class="text-2xl font-bold" x-text="version"></p>
                             </div>
                         </div>
