@@ -44,6 +44,11 @@ app.get('/collections/list', async (req, res) => {
     res.json(collections);
 });
 
+app.get('/collections/all-documents-count', async (req, res) => {
+    const allDocumentsCount = await chroma.allDocumentsCount(0, 0);
+    res.json(allDocumentsCount);
+});
+
 app.post('/collections/add', async (req, res) => {
     const { name, configuration, metadata } = req.body;
     await chroma.createCollection(name, configuration, metadata);

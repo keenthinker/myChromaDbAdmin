@@ -28,6 +28,20 @@ The myChromaDbAdmin is a webpage that helps you navigate, manage, and interact w
     - Node.js
     - Express.js
 
+## Installation
+1. Clone the repository and install the dependencies:
+   ```bash
+    npm install
+    ```
+2. Start the application:
+   ```bash
+   npm run start
+   ```
+3. Open your web browser and navigate to `http://localhost:3000` to access the myChromaDbAdmin interface.
+
+## Usage
+
+
 ## Support and Issues
 
 For any questions, feedback, or issues, please visit the [GitHub Repository](https://github.com/keenthinker/myChromaDbAdmin) and open an issue.

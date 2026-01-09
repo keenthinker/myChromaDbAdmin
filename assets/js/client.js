@@ -4,6 +4,7 @@ function app() {
         collections: [],
         currentCollection: null,
         documents: [],
+        documentsCount: 0,
         version: "",
         currentOffset: 0,
         footerTableItemsPagingText: "",
@@ -12,6 +13,7 @@ function app() {
         currentCollectionEdit: null,
         currentDocumentEdit: null,
         packageVersion: "",
+        databaseAddress: "http://localhost:8000", // todo: make configurable
 
         async LIMIT() {
             return 10;
@@ -24,6 +26,7 @@ function app() {
             this.version = await client.version();
             this.packageVersion = await client.packageVersion();
             this.collections = await client.listCollections();
+            this.documentsCount = await client.countAllDocuments();
         },
 
         async showDashboard() {

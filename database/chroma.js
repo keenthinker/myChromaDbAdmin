@@ -124,4 +124,15 @@ export default class ChromaDb {
         const exists = collections.some(col => col._name === collectionName);
         return exists;
     }
+
+    async allDocumentsCount(offset, total = 0) {
+        const limit = 100;
+        const collectionsSubset = await client.listCollections({ limit: limit, offset: offset });
+        let collectionDocumentsCount = 0;
+        for (const collection of collectionsSubset) {
+            const currentCollectionDocumentsCount = await collection.count();
+            collectionDocumentsCount += currentCollectionDocumentsCount;
+        }
+        return (collectionsSubset.length === limit) ? await totalCollectionsDocumentsCount(offset + limit, total + collectionDocumentsCount) : total + collectionDocumentsCount;
+    }
 }
