@@ -15,8 +15,8 @@ The myChromaDbAdmin is a webpage that helps you navigate, manage, and interact w
 
 ## Features
 
-- View and manage (create, delete, rename) collections in your Chroma database.
-- Browse, add, edit, and delete documents within collections.
+- View and manage (create, delete, rename) collections and collections metadata in your Chroma database.
+- Browse, add, edit, clone and delete documents content and metadata within collections.
 
 ## Tech Stack
 
@@ -29,6 +29,7 @@ The myChromaDbAdmin is a webpage that helps you navigate, manage, and interact w
     - Express.js
 
 ## Installation
+
 1. Clone the repository and install the dependencies:
    ```bash
     npm install

@@ -36,6 +36,8 @@ function app() {
         },
 
         async showDashboard() {
+            this.collections = await client.listCollections();
+            this.documentsCount = await client.countAllDocuments();
             this.view = 'dashboard';
         },
 
