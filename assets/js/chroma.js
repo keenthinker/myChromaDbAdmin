@@ -9,7 +9,10 @@ class ChromaDbClient {
                 ...options,
                 headers: { 'Content-Type': 'application/json', ...options.headers }
             });
-            if (!res.ok) throw new Error(await res.text());
+            if (!res.ok) {
+                const errorData = await res.json();
+                return errorData;
+            }
             return res.json();
         } catch (e) {
             console.error(e);

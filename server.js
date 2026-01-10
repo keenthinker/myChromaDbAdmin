@@ -105,7 +105,7 @@ app.use((req, res, next) => {
 // global error handler
 app.use((err, req, res, next) => {
     console.log(err.stack);
-    res.status(500).render('error', { error: 'Error' });
+    res.status(500).json({ error: 'Error' });
 });
 
 app.listen(port, () => {

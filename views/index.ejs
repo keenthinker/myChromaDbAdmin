@@ -83,6 +83,20 @@
                         <h1 class="text-3xl font-bold text-gray-900 mb-4">Dashboard</h1>
                         <div id="stats" class="grid grid-cols-2 gap-6">
 
+                            <div x-show="globalError" class="bg-red-200 p-6 rounded-xl shadow border border-gray-100 flex items-center gap-4 col-span-full">
+                                <div class="text-gray-400 shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="1.5" stroke="currentColor" class="size-10">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                                    </svg>
+                                </div>
+                                <div class="flex flex-col">
+                                    <p class="text-gray-500 leading-tight">Error</p>
+                                    <p class="text-lg font-bold text-gray-700 leading-tight">Something unexpected happened. Is the Chroma instance running?</p>
+                                </div>
+                            </div>
+
                             <div class="bg-white p-6 rounded-xl shadow border border-gray-100 flex items-center gap-4">
                                 <div class="text-gray-400 shrink-0">
                                     <svg xmlns="www.w3.org" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

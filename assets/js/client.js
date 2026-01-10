@@ -5,7 +5,7 @@ function app() {
         currentCollection: null,
         documents: [],
         documentsCount: 0,
-        version: "",
+        version: "unknown",
         currentOffset: 0,
         footerTableItemsPagingText: "",
         footerTableItemsPagingPreviousDisabled: true,
@@ -13,7 +13,8 @@ function app() {
         currentCollectionEdit: null,
         currentDocumentEdit: null,
         packageVersion: "",
-        databaseAddress: "http://localhost:8000", // todo: make configurable
+        databaseAddress: "http://localhost:8000", // todo: make configurable,
+        globalError: false,
 
         async LIMIT() {
             return 10;
@@ -22,11 +23,16 @@ function app() {
         async init() {
             client = new ChromaDbClient();
             const heartbeat = await client.heartbeat();
-            console.log(`🩷 ${heartbeat}`);
-            this.version = await client.version();
-            this.packageVersion = await client.packageVersion();
-            this.collections = await client.listCollections();
-            this.documentsCount = await client.countAllDocuments();
+            if (heartbeat.error) {
+                this.globalError = true;
+            } else {
+                this.globalError = false;
+                console.log(`🩷 ${heartbeat}`);
+                this.version = await client.version();
+                this.packageVersion = await client.packageVersion();
+                this.collections = await client.listCollections();
+                this.documentsCount = await client.countAllDocuments();
+            }
         },
 
         async showDashboard() {
