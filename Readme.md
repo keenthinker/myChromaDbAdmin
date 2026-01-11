@@ -113,6 +113,7 @@ If an unexpected issue occurs - such as the Chroma instance becoming unavailable
 
 The following items outline planned improvements and features for upcoming releases:
 
+- Integrate TailwindCSS properly into the project (currently using the CDN for the MVP)
 - Make the database server address and port configurable
 - Support multiple databases and tenants (not limited to defaults)
 - Improve collection ordering in the sidebar (preserve original order or optionally sort alphabetically)
