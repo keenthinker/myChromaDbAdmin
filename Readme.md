@@ -78,7 +78,7 @@ You can modify an existing collection to rename it or update its metadata.
 
 When you select a collection from the sidebar, the main panel displays all documents within that collection.
 
-![Image](.documentation/myChromaDbAdmin-05.png)
+![Image](./documentation/myChromaDbAdmin-05.png)
 
 If the selected collection contains no data, the list will appear empty.
 
