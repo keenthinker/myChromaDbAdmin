@@ -60,53 +60,53 @@ The home screen consists currently of two main areas:
 
 Upon loading, the application defaults to the Dashboard, witch provides a high-level overview of the connected instance. 
 
-![The myChromaDbAdmin start screen](screenshots\myChromaDbAdmin-01.png)
+![The myChromaDbAdmin start screen](./documentation/myChromaDbAdmin-01.png)
 
 ### Managing collections
 
 To create a new collection use the **create collection** dialog.
 
-![Image](screenshots\myChromaDbAdmin-02.png)
+![Image](./documentation/myChromaDbAdmin-02.png)
 
 You can modify an existing collection to rename it or update its metadata.
 
 **Please note:** *The distance function (space configuration) can only be set during creation. It cannot be changed once the collection has been created.*
 
-![Image](screenshots\myChromaDbAdmin-02-edit.png)
+![Image](./documentation/myChromaDbAdmin-02-edit.png)
 
 ### Viewing documents
 
 When you select a collection from the sidebar, the main panel displays all documents within that collection.
 
-![Image](screenshots\myChromaDbAdmin-05.png)
+![Image](.documentation/myChromaDbAdmin-05.png)
 
 If the selected collection contains no data, the list will appear empty.
 
-![Image](screenshots\myChromaDbAdmin-03.png)
+![Image](./documentation/myChromaDbAdmin-03.png)
 
 ### Adding and Editing Documents
 
 Documents can be added manually to any collection. Please note that embeddings are generated automatically by the server; they cannot be manually specified or edited.
 
-![Image](screenshots\myChromaDbAdmin-04.png)
+![Image](./documentation/myChromaDbAdmin-04.png)
 
 Existing documents can be modified at any time. 
 
-![Image](screenshots\myChromaDbAdmin-06.png)
+![Image](./documentation/myChromaDbAdmin-06.png)
 
 ### Navigation and error handling
 
 The paging functionality allows you to navigate through all documents if a collection contains more than 10 entries.
 
-![Image](screenshots\myChromaDbAdmin-07.png)
+![Image](./documentation/myChromaDbAdmin-07.png)
 
 The following is an example of a populated dashboard showing an instance with multiple collections and documents:
 
-![Image](screenshots\myChromaDbAdmin-09.png)
+![Image](./documentation/myChromaDbAdmin-09.png)
 
 If an unexpected issue occurs - such as the Chroma instance becoming unavailable - an error message will be displayed. 
 
-![Error message](screenshots\myChromaDbAdmin-10-error.png)
+![Error message](./documentation/myChromaDbAdmin-10-error.png)
 
 
 ## Support and Issues
