@@ -10,7 +10,7 @@ This is an independent personal project not affiliated with or sponsored by [Chr
 The myChromaDbAdmin is a webpage that helps you navigate, manage, and interact with your data stored in the Chroma database.
 
 ## Why is it called myChromaDbAdmin?
-The name **myChromaDbAdmin** is a direct homage to [phpMyAdmin](https://www.phpmyadmin.net/), a tool I frequently use and admire. Just as phpMyAdmin provides a powerful web interface for managing MySQL/MariaDb databases, this app aims to provide the same ease of use and accessibility for ChromaDB. 🙂
+The name **myChromaDbAdmin** is directly inspired by [phpMyAdmin](https://www.phpmyadmin.net/), a tool I frequently use and admire. Just as phpMyAdmin provides a powerful web interface for managing MySQL/MariaDb databases, this app aims to provide the same ease of use and accessibility for ChromaDB. 🙂
 
 ## Prerequisites
 
@@ -30,6 +30,7 @@ The name **myChromaDbAdmin** is a direct homage to [phpMyAdmin](https://www.phpm
 - Backend: 
     - Node.js
     - Express.js
+    - The Chroma [npm package](https://docs.trychroma.com/docs/overview/getting-started?lang=typescript)
 
 ## Motivation
 While working with ChromaDb locally, I found that the official TUI client had several limitations: 
@@ -108,10 +109,32 @@ If an unexpected issue occurs - such as the Chroma instance becoming unavailable
 
 ![Error message](./documentation/myChromaDbAdmin-10-error.png)
 
+## Roadmap
 
-## Support and Issues
+The following items outline planned improvements and features for upcoming releases:
 
-For any questions, feedback, or issues, please visit the [GitHub Repository](https://github.com/keenthinker/myChromaDbAdmin) and open an issue.
+- Make the database server address and port configurable
+- Support multiple databases and tenants (not limited to defaults)
+- Improve collection ordering in the sidebar (preserve original order or optionally sort alphabetically)
+- Fix metadata key/value handling:
+  - Allow newly added metadata keys to start empty
+  - Preserve the order in which metadata entries are added
+- Improve accessibility:
+  - Correct tab order
+  - Add useful keyboard shortcuts
+- Implement user management:
+  - Login/authentication
+  - Basic access control (e.g. restrict users to specific collections)
+- Add internationalization (i18n) and translation support
+
+
+## Feedback, Issues and Support
+
+I'd love to hear your honest feedback on the app, positive or critical, and the reasons behind it. Feedback, questions, and ideas are very welcome. 🙂
+
+- For bugs, feature requests, or concrete improvements, please use [GitHub Issues](https://github.com/keenthinker/myChromaDbAdmin/issues) so everything stays transparent and trackable.
+- If you have feedback, general questions, need help with a specific setup, or prefer a more direct conversation, feel free to reach out to me outside of GitHub as well.
+
 
 ## Contributing
 
