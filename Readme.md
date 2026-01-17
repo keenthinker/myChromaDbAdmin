@@ -46,8 +46,9 @@ I developed this web app to provide a more flexible solution for browsing, inspe
    ```bash
     npm install
     ```
-2. Start the application:
+2. Build the styling and start the application:
    ```bash
+   npm run tailwind:css
    npm run start
    ```
 3. Open your web browser and navigate to `http://localhost:3000` to access the myChromaDbAdmin interface.
@@ -113,7 +114,7 @@ If an unexpected issue occurs - such as the Chroma instance becoming unavailable
 
 The following items outline planned improvements and features for upcoming releases:
 
-- [ ] Integrate TailwindCSS properly into the project (currently using the CDN for the MVP)
+- [x] Integrate TailwindCSS properly into the project (MVP is using the CDN)
 - [ ] Make the database server address and port configurable
 - [ ] Support multiple databases and tenants (not limited to defaults)
 - [ ] Improve collection ordering in the sidebar (preserve original order or optionally sort alphabetically)

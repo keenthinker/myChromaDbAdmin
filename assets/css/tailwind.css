@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@theme {
+  --color-chroma-500: #7c3aed;
+  --color-chroma-600: #6d28d9;
+  --color-chroma-700: #5b21b6;
+  --color-chroma-900: #2e1065;
+}

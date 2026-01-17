@@ -18,14 +18,20 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
+    "tailwind:css": "postcss assets/css/tailwind.css -o assets/css/style.css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@chroma-core/default-embed": "^0.1.9",
+    "@tailwindcss/postcss": "^4.1.18",
+    "autoprefixer": "^10.4.23",
     "chromadb": "^3.2.0",
     "ejs": "^3.1.10",
     "express": "^5.2.1",
     "helmet": "^8.1.0",
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "postcss": "^8.5.6",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^4.1.18"
   }
 }
