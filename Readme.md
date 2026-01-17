@@ -113,20 +113,20 @@ If an unexpected issue occurs - such as the Chroma instance becoming unavailable
 
 The following items outline planned improvements and features for upcoming releases:
 
-- Integrate TailwindCSS properly into the project (currently using the CDN for the MVP)
-- Make the database server address and port configurable
-- Support multiple databases and tenants (not limited to defaults)
-- Improve collection ordering in the sidebar (preserve original order or optionally sort alphabetically)
-- Fix metadata key/value handling:
+- [ ] Integrate TailwindCSS properly into the project (currently using the CDN for the MVP)
+- [ ] Make the database server address and port configurable
+- [ ] Support multiple databases and tenants (not limited to defaults)
+- [ ] Improve collection ordering in the sidebar (preserve original order or optionally sort alphabetically)
+- [ ] Fix metadata key/value handling:
   - Allow newly added metadata keys to start empty
   - Preserve the order in which metadata entries are added
-- Improve accessibility:
+- [ ] Improve accessibility:
   - Correct tab order
   - Add useful keyboard shortcuts
-- Implement user management:
+- [ ] Implement user management:
   - Login/authentication
   - Basic access control (e.g. restrict users to specific collections)
-- Add internationalization (i18n) and translation support
+- [ ] Add internationalization (i18n) and translation support
 
 
 ## Feedback, Issues and Support
