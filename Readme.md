@@ -117,7 +117,7 @@ The following items outline planned improvements and features for upcoming relea
 - [x] Integrate TailwindCSS properly into the project (MVP is using the CDN)
 - [ ] Make the database server address and port configurable
 - [ ] Support multiple databases and tenants (not limited to defaults)
-- [ ] Improve collection ordering in the sidebar (preserve original order or optionally sort alphabetically)
+- [x] Improve collection ordering in the sidebar (sort alphabetically)
 - [ ] Fix metadata key/value handling:
   - Allow newly added metadata keys to start empty
   - Preserve the order in which metadata entries are added

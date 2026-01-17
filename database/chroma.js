@@ -20,7 +20,8 @@ export default class ChromaDb {
     }
 
     async listCollections() {
-        return await client.listCollections();
+        const collections = await client.listCollections();
+        return collections.sort((c1, c2) => c1._name.localeCompare(c2._name));
     }
 
     async listCollectionItems(collectionName, limit = 10, offset = 0) {

@@ -27,7 +27,8 @@
                 <div class="flex items-center justify-between px-4 mb-2">
                     <span class="text-xs uppercase text-slate-400">Collections</span>
                     <button @click="editCollection(undefined)"
-                        class="bg-chroma-600 text-white px-3 py-1.5 rounded text-xs hover:bg-chroma-500">
+                        class="bg-chroma-600 text-white px-3 py-1.5 rounded text-xs hover:bg-chroma-500"
+                        :disabled="globalError">
                         Add Collection
                     </button>
                 </div>
