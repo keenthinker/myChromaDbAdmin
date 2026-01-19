@@ -55,7 +55,7 @@ I developed this web app to provide a more flexible solution for browsing, inspe
 
 ## Usage and features
 
-You can find a detailed description and numerous screenshots in the [Documentation](./Documentation/Documentation.md) folder.
+You can find a detailed description and numerous screenshots in the [Documentation](https://github.com/keenthinker/myChromaDbAdmin/blob/main/documentation/Documentation.md) folder.
 
 
 ## Roadmap
