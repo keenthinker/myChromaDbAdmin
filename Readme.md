@@ -2,6 +2,8 @@
 
 **Simple user-friendly Chroma database administration WebUI.**
 
+![Image](./documentation/myChromaDbAdmin-11.png)
+
 ## Disclaimer
 This is an independent personal project not affiliated with or sponsored by [Chroma](https://www.trychroma.com/).
 
