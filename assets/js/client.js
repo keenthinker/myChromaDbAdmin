@@ -70,14 +70,12 @@ function app() {
         },
 
         async deleteCollection(col) {
-            if (confirm(`Delete collection ${col._name}? This action cannot be undone.`)) {
-                await client.deleteCollection(col._name);
-                this.collections = await client.listCollections();
-                this.view = 'dashboard';
-            }
+            await client.deleteCollection(col._name);
+            this.collections = await client.listCollections();
+            this.view = 'dashboard';
         },
 
-        async editCollection(col) {
+        async editCollection(col, confirmDelete = false) {
             if (col) {
                 const clone = structuredClone(Alpine.raw(col));
                 this.currentCollectionEdit = {};
@@ -87,6 +85,7 @@ function app() {
                 this.currentCollectionEdit.isNew = false;
                 this.currentCollectionEdit.headerText = `Edit Collection`;
                 this.currentCollectionEdit.buttonText = `Save Changes`;
+                this.currentCollectionEdit.confirmDelete = confirmDelete;
             } else {
                 this.currentCollectionEdit = {
                     name: "",
@@ -94,7 +93,8 @@ function app() {
                     space: "cosine",
                     isNew: true,
                     headerText: "Create Collection",
-                    buttonText: "Create Collection"
+                    buttonText: "Create Collection",
+                    confirmDelete: false
                 };
             }
             this.view = 'collectionEdit';
