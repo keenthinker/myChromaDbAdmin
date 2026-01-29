@@ -156,7 +156,7 @@ function app() {
             delete this.currentDocumentEdit.metadata[oldKey];
         },
 
-        async editDocument(doc) {
+        async editDocument(doc, confirmDelete = false) {
             const clone = structuredClone(Alpine.raw(doc));
             this.currentDocumentEdit = {};
             if (doc) {
@@ -169,6 +169,8 @@ function app() {
                 this.currentDocumentEdit.buttonText = `Save Changes`;
                 this.currentDocumentEdit.embeddingsText = 'Embeddings (read-only)';
                 this.currentDocumentEdit.embeddings = JSON.stringify(documentEmbeddings.embeddings);
+                this.currentDocumentEdit.confirmDelete = confirmDelete;
+                this.currentDocumentEdit.reference = doc;
             } else {
                 this.currentDocumentEdit.id = '';
                 this.currentDocumentEdit.document = '';
@@ -178,6 +180,8 @@ function app() {
                 this.currentDocumentEdit.buttonText = `Add Document`;
                 this.currentDocumentEdit.embeddingsText = 'Embeddings (will be generated)';
                 this.currentDocumentEdit.embeddings = JSON.stringify([]);
+                this.currentDocumentEdit.confirmDelete = false;
+                this.currentDocumentEdit.reference = doc;
             }
             this.view = 'documentEdit';
         },
@@ -189,9 +193,7 @@ function app() {
         },
 
         async deleteDocument(doc) {
-            if (confirm(`Delete item ${doc.id}?`)) {
-                await client.deleteItems(this.currentCollection._name, [String(doc.id)]);
-            }
+            await client.deleteItems(this.currentCollection._name, [String(doc.id)]);
             await this.openCollection(this.currentCollection);
         },
 

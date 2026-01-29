@@ -215,7 +215,7 @@
                                                     <button @click="editDocument(doc)"
                                                         class="border border-blue-600 text-blue-600 hover:text-blue-800 text-sm edit-item-btn bg-blue-100 rounded py-1 px-2"
                                                         :data-id="doc.id">View / Edit</button>
-                                                    <button @click="deleteDocument(doc)"
+                                                    <button @click="editDocument(doc, true)"
                                                         class="border border-red-600 text-red-600 hover:text-red-800 text-sm delete-item-btn bg-red-100 rounded py-1 px-2"
                                                         :data-id="doc.id">Delete</button>
                                                 </td>
@@ -472,6 +472,43 @@
                                         class="px-4 py-2 text-sm border border-gray-300 rounded hover:bg-gray-50">
                                         Cancel
                                     </button>
+                                </div>
+                                <!-- Delete Document Zone -->
+                                <div x-show="!currentDocumentEdit.isNew" class="mt-12 pt-6 border-t border-red-100">
+                                    <h3 class="text-sm font-semibold text-red-600 mb-1">Danger Zone</h3>
+                                    <p class="text-xs text-gray-500 mb-4">Once you delete a document, there is no
+                                        going back. Please be certain.</p>
+
+                                    <div
+                                        class="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center justify-between">
+                                        <div>
+                                            <p class="text-sm font-bold text-gray-900">Delete this document</p>
+                                            <p class="text-xs text-gray-600">
+                                                ID: <span class="font-mono" x-text="currentDocumentEdit.id"></span>
+                                            </p>
+                                        </div>
+
+                                        <!-- Toggle Button to show confirmation -->
+                                        <div>
+                                            <button x-show="!currentDocumentEdit.confirmDelete" @click="currentDocumentEdit.confirmDelete = true" type="button"
+                                                class="bg-white text-red-600 border border-red-300 px-4 py-2 rounded text-sm font-medium hover:bg-red-50 transition-colors">
+                                                Delete...
+                                            </button>
+
+                                            <div x-show="currentDocumentEdit.confirmDelete" x-cloak class="flex items-center gap-2">
+                                                <span class="text-xs font-medium text-red-700 animate-pulse">Are you sure?</span>
+                                                <button @click="deleteDocument(currentDocumentEdit.reference)"
+                                                    type="button"
+                                                    class="bg-red-600 text-white px-3 py-2 rounded text-xs font-bold hover:bg-red-700 shadow-sm">
+                                                    Yes, Delete
+                                                </button>
+                                                <button @click="currentDocumentEdit.confirmDelete = false" type="button"
+                                                    class="text-gray-500 hover:text-gray-700 text-xs px-2 py-1">
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div><!-- remove to have full width -->
                         </form>
