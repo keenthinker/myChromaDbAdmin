@@ -66,7 +66,8 @@
                         <h1 class="text-3xl font-bold text-gray-900 mb-4">Dashboard</h1>
                         <div id="stats" class="grid grid-cols-2 gap-6">
 
-                            <div x-show="globalError" class="bg-red-200 p-6 rounded-xl shadow border border-gray-100 flex items-center gap-4 col-span-full">
+                            <div x-show="globalError"
+                                class="bg-red-200 p-6 rounded-xl shadow border border-gray-100 flex items-center gap-4 col-span-full">
                                 <div class="text-gray-400 shrink-0">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                         stroke-width="1.5" stroke="currentColor" class="size-10">
@@ -76,7 +77,8 @@
                                 </div>
                                 <div class="flex flex-col">
                                     <p class="text-gray-500 leading-tight">Error</p>
-                                    <p class="text-lg font-bold text-gray-700 leading-tight">Something unexpected happened. Is the Chroma instance running?</p>
+                                    <p class="text-lg font-bold text-gray-700 leading-tight">Something unexpected
+                                        happened. Is the Chroma instance running?</p>
                                 </div>
                             </div>
 
@@ -271,7 +273,8 @@
                                     </label>
                                     <input id="collectionNameInput" type="text" value="${name}"
                                         placeholder="collection_name"
-                                        class="w-full border border-gray-300 rounded px-3 py-2" required
+                                        class="w-full border border-gray-300 rounded px-3 py-2 font-mono text-sm bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-colors"
+                                        required
                                         x-model="currentCollectionEdit.name" />
                                 </div>
 
@@ -313,10 +316,10 @@
                                             <div class="flex gap-2 items-center">
                                                 <input type="text" placeholder="key" :value="key"
                                                     @change="updateMetadataKey(key, $event.target.value)"
-                                                    class="meta-key flex-1 border border-gray-300 rounded px-2 py-1 text-xs font-mono" />
+                                                    class="meta-key flex-1 border border-gray-300 rounded px-2 py-1 text-xs font-mono focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-colors" />
                                                 <input type="text" placeholder="value"
                                                     x-model="currentCollectionEdit.metadata[key]"
-                                                    class="meta-value flex-1 border border-gray-300 rounded px-2 py-1 text-xs font-mono" />
+                                                    class="meta-value flex-1 border border-gray-300 rounded px-2 py-1 text-xs font-mono focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-colors" />
                                                 <button type="button" @click="removeMetadata(key)"
                                                     class="remove-meta text-red-500 hover:text-red-700 text-xs px-1">
                                                     ✕
@@ -369,7 +372,7 @@
                                     <label class="block text-xs font-medium text-gray-600 mb-1">ID</label>
                                     <input id="editDocId" type="text" x-model="currentDocumentEdit.id"
                                         placeholder="Document ID"
-                                        class="w-full border border-gray-300 rounded px-3 py-2 font-mono text-sm"
+                                        class="w-full border border-gray-300 rounded px-3 py-2 font-mono text-sm bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-colors"
                                         required />
                                 </div>
 
@@ -377,7 +380,7 @@
                                 <div>
                                     <label class="block text-xs font-medium text-gray-600 mb-1">Document Content</label>
                                     <textarea id="editDocContent" rows="4" placeholder="Document content"
-                                        class="w-full border border-gray-300 rounded px-3 py-2 text-sm"
+                                        class="w-full border border-gray-300 rounded px-3 py-2 font-mono text-sm bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-colors"
                                         x-model="currentDocumentEdit.document"></textarea>
                                 </div>
 
@@ -398,10 +401,10 @@
                                             <div class="flex gap-2 items-center">
                                                 <input type="text" :value="key" placeholder="key"
                                                     @change="updateMetadataKeyDocument(key, $event.target.value)"
-                                                    class="meta-key flex-1 border border-gray-300 rounded px-2 py-1 text-xs font-mono" />
+                                                    class="meta-key flex-1 border border-gray-300 rounded px-2 py-1 text-xs font-mono focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-colors" />
                                                 <input type="text" placeholder="value"
                                                     x-model="currentDocumentEdit.metadata[key]"
-                                                    class="meta-value flex-1 border border-gray-300 rounded px-2 py-1 text-xs font-mono" />
+                                                    class="meta-value flex-1 border border-gray-300 rounded px-2 py-1 text-xs font-mono focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-colors" />
                                                 <button type="button" @click="removeMetadataDocument(key)"
                                                     class="remove-meta text-red-500 hover:text-red-700 text-xs px-1">
                                                     ✕

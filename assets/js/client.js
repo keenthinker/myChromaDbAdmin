@@ -42,27 +42,31 @@ function app() {
         },
 
         async openCollection(col) {
-            if (col._name !== this.currentCollection?._name) {
-                this.currentOffset = 0;
+            if (col) {
+                if (col._name !== this.currentCollection?._name) {
+                    this.currentOffset = 0;
+                }
+
+                this.currentCollection = col;
+
+                const LIMIT = await this.LIMIT();
+                const count = await client.countItems(col._name);
+                const data = await client.items(col._name, LIMIT, this.currentOffset);
+
+                this.footerTableItemsText = await this.footerTableItems(col);
+                this.footerTableItemsPagingPreviousDisabled = this.currentOffset === 0;
+                this.footerTableItemsPagingNextDisabled = (this.currentOffset + LIMIT) >= count;
+
+                this.documents = data.ids.map((id, i) => ({
+                    id,
+                    document: data.documents[i],
+                    metadata: data.metadatas[i] || {}
+                }));
+
+                this.view = 'collection';
+            } else {
+                this.view = 'dashboard';
             }
-
-            this.currentCollection = col;
-
-            const LIMIT = await this.LIMIT();
-            const count = await client.countItems(col._name);
-            const data = await client.items(col._name, LIMIT, this.currentOffset);
-
-            this.footerTableItemsText = await this.footerTableItems(col);
-            this.footerTableItemsPagingPreviousDisabled = this.currentOffset === 0;
-            this.footerTableItemsPagingNextDisabled = (this.currentOffset + LIMIT) >= count;
-
-            this.documents = data.ids.map((id, i) => ({
-                id,
-                document: data.documents[i],
-                metadata: data.metadatas[i] || {}
-            }));
-
-            this.view = 'collection';
         },
 
         async deleteCollection(col) {
