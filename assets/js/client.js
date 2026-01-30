@@ -80,7 +80,15 @@ function app() {
                 const clone = structuredClone(Alpine.raw(col));
                 this.currentCollectionEdit = {};
                 this.currentCollectionEdit.name = clone._name;
-                this.currentCollectionEdit.metadata = clone._metadata || {};
+
+                const metadataObject = col._metadata || {};
+                const metadataArray = Object.entries(metadataObject).map(([key, value]) => ({
+                    id: this.metadataKeyGenerator(),
+                    key: key,
+                    value: value
+                }));
+
+                this.currentCollectionEdit.metadata = metadataArray; //;clone._metadata || [];
                 this.currentCollectionEdit.space = clone._configuration.hnsw.space;
                 this.currentCollectionEdit.isNew = false;
                 this.currentCollectionEdit.headerText = `Edit Collection`;
@@ -89,7 +97,7 @@ function app() {
             } else {
                 this.currentCollectionEdit = {
                     name: "",
-                    metadata: {},
+                    metadata: [],
                     space: "cosine",
                     isNew: true,
                     headerText: "Create Collection",
@@ -101,22 +109,30 @@ function app() {
         },
 
         // collection metadata fields handlers
+        metadataKeyGenerator() {
+            return 'key_' + Date.now() + Math.random().toString(36).slice(2, 7);
+        },
+
         addMetadata() {
-            const newKey = 'key_' + Date.now();
-            this.currentCollectionEdit.metadata[newKey] = '';
+            const newKey = this.metadataKeyGenerator();
+            this.currentCollectionEdit.metadata.push({
+                id: newKey,
+                key: "",
+                value: ""
+            });
         },
-        removeMetadata(key) {
-            delete this.currentCollectionEdit.metadata[key];
-        },
-        updateMetadataKey(oldKey, newKey) {
-            if (oldKey === newKey || !newKey) return;
-            // Rename object key: copy value to new key, then delete old
-            this.currentCollectionEdit.metadata[newKey] = this.currentCollectionEdit.metadata[oldKey];
-            delete this.currentCollectionEdit.metadata[oldKey];
+        removeMetadata(id) {
+            const index = this.currentCollectionEdit.metadata.findIndex(item => item.id === id);
+            if (index !== -1) {
+                this.currentCollectionEdit.metadata.splice(index, 1);
+            }
         },
 
         async saveCollectionEdit() {
             const edit = structuredClone(Alpine.raw(this.currentCollectionEdit));
+            edit.metadata = Object.fromEntries(edit.metadata
+                .filter(item => item.key && item.value)
+                .map(item => [item.key, item.value]));
             if (edit.isNew) {
                 await client.createCollection(edit.name, { hnsw: { space: edit.space } }, edit.metadata);
             } else {
