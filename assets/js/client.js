@@ -151,25 +151,25 @@ function app() {
 
         // document metadata fields handlers
         addMetadataDocument() {
-            const newKey = 'key_' + Date.now();
-            this.currentDocumentEdit.metadata[newKey] = '';
+            const newKey = this.metadataKeyGenerator();
+            this.currentDocumentEdit.metadata.push({
+                id: newKey,
+                key: "",
+                value: ""
+            });            
         },
-        removeMetadataDocument(key) {
-            //delete this.currentDocumentEdit.metadata[key];
-            /*
-            In ChromaDB, the upsert and update operations perform a shallow merge (also known as a "patch" update) 
-            rather than a full overwrite. This means that sendindg a new metadata object that is missing a field previously stored in the database, 
-            Chroma will keep the old field rather than deleting it.
-            Record metadata fields must be explicitly set to null to delete them.
-            Alternative solution: delete the whole record and re-add it with the desired fields only.
-            */
-            this.currentDocumentEdit.metadata[key] = null;
-        },
-        updateMetadataKeyDocument(oldKey, newKey) {
-            if (oldKey === newKey || !newKey) return;
-            // Rename object key: copy value to new key, then delete old
-            this.currentDocumentEdit.metadata[newKey] = this.currentDocumentEdit.metadata[oldKey];
-            delete this.currentDocumentEdit.metadata[oldKey];
+        removeMetadataDocument(id) {
+            const index = this.currentDocumentEdit.metadata.findIndex(item => item.id === id);
+            if (index !== -1) {
+                /*
+                In ChromaDB, the upsert and update operations perform a shallow merge (also known as a "patch" update) 
+                rather than a full overwrite. This means that sendindg a new metadata object that is missing a field previously stored in the database, 
+                Chroma will keep the old field rather than deleting it.
+                Record metadata fields must be explicitly set to null to delete them.
+                Alternative solution: delete the whole record and re-add it with the desired fields only.
+                */
+                this.currentDocumentEdit.metadata[index]['value'] = null;
+            }
         },
 
         async editDocument(doc, confirmDelete = false) {
@@ -179,7 +179,15 @@ function app() {
                 const documentEmbeddings = await client.embeddings(this.currentCollection._name, clone.id);
                 this.currentDocumentEdit.id = clone.id;
                 this.currentDocumentEdit.document = clone.document;
-                this.currentDocumentEdit.metadata = clone.metadata || {};
+
+                const metadataObject = clone.metadata || {};
+                const metadataArray = Object.entries(metadataObject).map(([key, value]) => ({
+                    id: this.metadataKeyGenerator(),
+                    key: key,
+                    value: value
+                }));
+
+                this.currentDocumentEdit.metadata = metadataArray; // clone.metadata || {};
                 this.currentDocumentEdit.isNew = false;
                 this.currentDocumentEdit.headerText = `Edit Document`;
                 this.currentDocumentEdit.buttonText = `Save Changes`;
@@ -190,7 +198,7 @@ function app() {
             } else {
                 this.currentDocumentEdit.id = '';
                 this.currentDocumentEdit.document = '';
-                this.currentDocumentEdit.metadata = {};
+                this.currentDocumentEdit.metadata = [];
                 this.currentDocumentEdit.isNew = true;
                 this.currentDocumentEdit.headerText = `Add Document`;
                 this.currentDocumentEdit.buttonText = `Add Document`;
@@ -204,6 +212,9 @@ function app() {
 
         async saveDocumentEdit() {
             const edit = structuredClone(Alpine.raw(this.currentDocumentEdit));
+            edit.metadata = Object.fromEntries(edit.metadata
+                .filter(item => item.key) //&& item.value)
+                .map(item => [item.key, item.value]));
             await client.upsertItems(this.currentCollection._name, [edit.id], [edit.document], [edit.metadata]);
             await this.openCollection(this.currentCollection);
         },
