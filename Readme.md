@@ -68,9 +68,9 @@ The following items outline planned improvements and features for upcoming relea
 - [ ] Make the database server address and port configurable
 - [ ] Support multiple databases and tenants (not limited to defaults)
 - [x] Improve collection ordering in the sidebar (sort alphabetically)
-- [1/2] Fix metadata key/value handling:
-  - [x] Allow newly added metadata keys to start empty
-  - [ ] Preserve the order in which metadata entries are added
+- [x] Fix metadata key/value handling:
+  - Allow newly added metadata keys to start empty
+  - Metadata key/value pairs sorted alphabetically by key
 - [ ] Improve accessibility:
   - Correct tab order
   - Add useful keyboard shortcuts

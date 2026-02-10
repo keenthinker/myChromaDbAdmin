@@ -88,7 +88,7 @@ function app() {
                     value: value
                 }));
 
-                this.currentCollectionEdit.metadata = metadataArray; //;clone._metadata || [];
+                this.currentCollectionEdit.metadata = metadataArray.sort((mdi1, mdi2) => mdi1.key.localeCompare(mdi2.key)); //;clone._metadata || [];
                 this.currentCollectionEdit.space = clone._configuration.hnsw.space;
                 this.currentCollectionEdit.isNew = false;
                 this.currentCollectionEdit.headerText = `Edit Collection`;
@@ -187,7 +187,7 @@ function app() {
                     value: value
                 }));
 
-                this.currentDocumentEdit.metadata = metadataArray; // clone.metadata || {};
+                this.currentDocumentEdit.metadata = metadataArray.sort((mdi1, mdi2) => mdi1.key.localeCompare(mdi2.key)); // clone.metadata || {};
                 this.currentDocumentEdit.isNew = false;
                 this.currentDocumentEdit.headerText = `Edit Document`;
                 this.currentDocumentEdit.buttonText = `Save Changes`;
