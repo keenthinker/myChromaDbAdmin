@@ -2,6 +2,7 @@ import express from 'express';
 //import helmet from 'helmet';
 import ChromaDb from './database/chroma.js';
 import pkg from './package.json' with { type: 'json' };
+import { readConfig, writeConfig, getSelectedConfiguration } from './configuration/utils.js';
 
 const packageVersion = pkg.version;
 
@@ -9,7 +10,9 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Chroma 
-const chroma = new ChromaDb();
+const chromaConfigurations = await readConfig();
+const chromaConfiguration = await getSelectedConfiguration(chromaConfigurations);
+const chroma = new ChromaDb(chromaConfiguration.host, chromaConfiguration.port, chromaConfiguration.protocol);
 
 // Middleware
 app.use(express.json());

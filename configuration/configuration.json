@@ -1,0 +1,9 @@
+[
+  {
+    "name": "Localhost",
+    "address": "localhost",
+    "protocol": "http",
+    "port": 8000,
+    "selected": true
+  }
+]

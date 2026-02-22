@@ -1,14 +1,14 @@
 import { ChromaClient } from "chromadb";
 
-const client = new ChromaClient({
-    host: "localhost", // TODO: make configurable
-    port: 8000,
-    protocol: "http"
-});
+let client = undefined;
 
 export default class ChromaDb {
-    constructor() {
-
+    constructor(host, port, protocol) {
+        client = new ChromaClient({
+            host: host,
+            port: port,
+            protocol: protocol
+        });
     }
 
     async heartbeat() {
