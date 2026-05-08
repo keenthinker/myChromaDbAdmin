@@ -1,13 +1,21 @@
 import express from 'express';
+import session from 'express-session';
 //import helmet from 'helmet';
 import ChromaDb from './database/chroma.js';
 import pkg from './package.json' with { type: 'json' };
 import { readConfig, writeConfig, getSelectedConfiguration } from './configuration/utils.js';
+import { User } from './usermanagement/usermanagement.js';
+import passport from 'passport';
+import { Strategy as LocalStrategy } from 'passport-local';
+import { checkAuthenticated, checkAuthenticatedJson, checkNotAuthenticated } from './auth.js';
 
 const packageVersion = pkg.version;
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.disable('x-powered-by');
+app.set('trust proxy', 1);
 
 // Chroma 
 const chromaConfigurations = await readConfig();
@@ -21,9 +29,82 @@ app.use(express.static('assets'));
 //app.use(helmet());
 app.set('view engine', 'ejs');
 
+// --- Session configuration ---
+app.use(session({
+    secret: '9fH233sdHHQ-fs!23124', //process.env.SESSION_SECRET, // use a strong secret in production
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false } // Set to true if using HTTPS
+}));
+
+// --- custom flash middleware ---
+app.use((req, res, next) => {
+    res.locals.flash = req.session.flash || [];
+    delete req.session.flash;
+
+    req.setFlash = (type, message) => {
+        const entry = { type, message };
+
+        if (!req.session.flash) {
+            req.session.flash = [];
+        }
+        req.session.flash.push(entry); // if redirecting
+        res.locals.flash.push(entry); // if rendering immediately
+    };
+
+    next();
+});
+
+// --- Passport init ---
+app.use(passport.initialize());
+app.use(passport.session());
+
+// --- Passport local strategy ---
+passport.use(new LocalStrategy(
+    async (username, password, done) => {
+        try {
+            const user = await User.findOne(username);
+
+            if (!user || !user.id) {
+                // No user found (false = authentication failed)
+                return done(null, false, { message: 'Login failed' });
+            }
+
+            const isMatch = await User.verifyPassword(user, password);
+
+            if (!isMatch) {
+                return done(null, false, { message: 'Login failed' });
+            }
+
+            return done(null, user);
+        } catch (error) {
+            return done(error);
+        }
+    }
+));
+
+// session serialization
+passport.serializeUser((user, done) => done(null, user.id));
+
+// session deserialization
+passport.deserializeUser(async (id, done) => {
+    const user = await User.findById(id);
+    if (user) {
+        done(null, user); // req.user will be set to this user object
+    } else {
+        done(new Error('Login failed'));
+    }
+});
+
 // Routes
 app.get('/', async (req, res) => {
-    res.render('index');
+    if (req.isAuthenticated()) {
+        return res.render('index', { user: req.user });
+    } else {
+        req.setFlash('type', 'error');
+        req.setFlash('message', 'ERROR!');
+        res.render('index', { user: null });
+    }
 });
 
 // Chroma handlers
