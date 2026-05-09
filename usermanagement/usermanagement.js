@@ -6,7 +6,7 @@ import { randomUUID } from 'node:crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const dbPath = path.join(__dirname, '../secrets/mychromadbadminusers.json');
+const dbPath = path.join(__dirname, '../../secrets/mychromadbadminusers.json');
 
 const defaultData = { users: [] };
 const db = await JSONFilePreset(dbPath, defaultData);

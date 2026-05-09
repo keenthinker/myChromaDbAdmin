@@ -2,7 +2,7 @@ export function checkAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next(); // OK
     }
-    res.redirect('/'); // Not authenticated, redirect to login
+    res.redirect('/signin'); // Not authenticated, redirect to login
 }
 
 export function checkAuthenticatedJson(req, res, next) {

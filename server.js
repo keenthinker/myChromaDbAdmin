@@ -103,8 +103,36 @@ app.get('/', async (req, res) => {
     } else {
         req.setFlash('type', 'error');
         req.setFlash('message', 'ERROR!');
-        res.render('index', { user: null });
+        res.render('signin', { user: null });
     }
+});
+
+// --- Authentication routes ---
+app.get('/signin', checkNotAuthenticated, (req, res) => res.render('signin'));
+
+app.post('/signin', (req, res, next) => {
+    console.log(JSON.stringify(req.body, null, 2));
+    // User.create(req.body.username, req.body.password).then(() => {
+    //     req.setFlash('type', 'success');
+    //     req.setFlash('message', 'User created, you can now log in');
+    //     req.setFlash('username', req.body.username);
+    //     res.redirect('/signin');
+    // });
+    passport.authenticate('local', (err, user, info) => {
+        if (err) return next(err);
+
+        if (!user) {
+            req.setFlash('type', 'error');
+            req.setFlash('message', info.message || 'Login failed');
+            req.setFlash('username', req.body.username);
+            return res.redirect('/signin');
+        }
+
+        req.logIn(user, (err) => {
+            if (err) return next(err);
+            return res.redirect('/');
+        });
+    })(req, res, next);
 });
 
 // Chroma handlers
