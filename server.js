@@ -121,10 +121,10 @@ app.get('/signin', checkNotAuthenticated, (req, res) => {
 app.post('/signin', (req, res, next) => {
     //console.log(JSON.stringify(req.body, null, 2));
     // User.create(req.body.username, req.body.password).then(() => {
-    //     req.setFlash('type', 'success');
+    //     req.setFlash('type', 'info');
     //     req.setFlash('message', 'User created, you can now log in');
     //     req.setFlash('username', req.body.username);
-    //     res.redirect('/signin');
+    //     return res.redirect('/signin');
     // });
     passport.authenticate('local', (err, user, info) => {
         if (err) return next(err);

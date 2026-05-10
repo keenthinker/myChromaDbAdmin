@@ -22,6 +22,7 @@ function app() {
 
         async init() {
             client = new ChromaDbClient();
+            this.packageVersion = await client.packageVersion();
             const heartbeat = await client.heartbeat();
             if (heartbeat.error) {
                 this.globalError = true;
@@ -29,7 +30,6 @@ function app() {
                 this.globalError = false;
                 console.log(`🩷 ${heartbeat}`);
                 this.version = await client.version();
-                this.packageVersion = await client.packageVersion();
                 this.collections = await client.listCollections();
                 this.documentsCount = await client.countAllDocuments();
             }
