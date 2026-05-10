@@ -22,6 +22,7 @@ The name **myChromaDbAdmin** is directly inspired by [phpMyAdmin](https://www.ph
 
 - View and manage (create, delete, rename) collections and collections metadata in your Chroma database.
 - Browse and manage (add, edit, clone, delete) documents content and metadata within collections.
+- Integrated user authentication and session management to ensure secure remote access and protected instance hosting.
 
 ## Tech Stack
 
@@ -32,6 +33,7 @@ The name **myChromaDbAdmin** is directly inspired by [phpMyAdmin](https://www.ph
 - Backend: 
     - Node.js
     - Express.js
+    - Passport.js (Authentication)
     - The Chroma [npm package](https://docs.trychroma.com/docs/overview/getting-started?lang=typescript)
 
 ## Motivation
