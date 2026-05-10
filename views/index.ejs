@@ -13,6 +13,11 @@
 </head>
 
 <body class="bg-gray-100 h-screen overflow-hidden" x-data="app()">
+    <script>
+        window.userData = {
+            username: '<%= locals.user ? user.username : "" %>'
+        };
+    </script>
     <div class="flex h-full">
         <!-- sidebar -->
         <aside class="w-64 bg-slate-900 text-slate-200 flex flex-col">
@@ -37,7 +42,7 @@
                             </div>
                             
                             <!-- Settings link -->
-                            <a href="/settings" class="text-slate-500 hover:text-slate-200 transition-colors p-1" title="Settings">
+                            <a href="#" @click.prevent="showSettings()" class="text-slate-500 hover:text-slate-200 transition-colors p-1" title="Settings">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -553,6 +558,72 @@
                         </form>
                     </div>
                 </template>
+
+                <!-- User settings view -->
+                <template x-if="view === 'settings'">
+                    <div class="flex justify-center w-full p-8">
+                        <div class="w-full max-w-4xl">
+                            <h1 class="text-3xl font-bold text-gray-900 mb-6">Settings</h1>
+                            
+                            <div class="grid gap-6">
+                                <!-- Profile card -->
+                                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                                    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                                        <h2 class="font-semibold text-gray-700">Profile Information</h2>
+                                    </div>
+                                    <div class="p-6 space-y-4">
+                                        <div class="grid grid-cols-1 gap-4">
+                                            <div>
+                                                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Username</label>
+                                                <input type="text" x-model="userSettings.username" readonly
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-slate-900 outline-none transition-all">
+                                            </div>
+                                            <!-- <div>
+                                                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Email</label>
+                                                <input type="email" x-model="userSettings.email" 
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-slate-900 outline-none transition-all">
+                                            </div> -->
+                                        </div>
+                                        <!-- <div class="pt-2">
+                                            <button @click="updateProfile()" class="bg-slate-900 text-white px-4 py-2 rounded text-sm hover:bg-slate-800 transition-colors font-medium">
+                                                Save Changes
+                                            </button>
+                                        </div> -->
+                                    </div>
+                                </div>
+
+                                <!-- Security card -->
+                                <!-- <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                                    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                                        <h2 class="font-semibold text-gray-700">Security</h2>
+                                    </div>
+                                    <form action="/settings/password" method="POST" class="p-6 space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Current Password</label>
+                                            <input type="password" name="currentPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-slate-900">
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">New Password</label>
+                                                <input type="password" name="newPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-slate-900">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Confirm Password</label>
+                                                <input type="password" name="confirmPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-slate-900">
+                                            </div>
+                                        </div>
+                                        <div class="pt-2">
+                                            <button type="submit" class="border border-gray-300 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-50 transition-colors font-medium">
+                                                Update Password
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
             </div>
         </main>
     </div>

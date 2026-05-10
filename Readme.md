@@ -74,9 +74,8 @@ The following items outline planned improvements and features for upcoming relea
 - [ ] Improve accessibility:
   - Correct tab order
   - Add useful keyboard shortcuts
-- [ ] Implement user management:
-  - Login/authentication
-  - Basic access control (e.g. restrict users to specific collections)
+- [x] Implement user management (1): login/authentication
+- [ ] Implement user management (2): basic access control (e.g. restrict users to specific collections)
 - [ ] Add internationalization (i18n) and translation support
 
 
