@@ -39,8 +39,10 @@ app.use(session({
 
 // --- custom flash middleware ---
 app.use((req, res, next) => {
-    res.locals.flash = req.session.flash || [];
+    const flashMessages = req.session.flash || [];
     delete req.session.flash;
+
+    res.locals.flash = (flashMessages.length > 0) ? flashMessages : null;
 
     req.setFlash = (type, message) => {
         const entry = { type, message };
@@ -49,6 +51,10 @@ app.use((req, res, next) => {
             req.session.flash = [];
         }
         req.session.flash.push(entry); // if redirecting
+
+        if (!res.locals.flash) {
+            res.locals.flash = [];
+        }
         res.locals.flash.push(entry); // if rendering immediately
     };
 
@@ -101,17 +107,19 @@ app.get('/', async (req, res) => {
     if (req.isAuthenticated()) {
         return res.render('index', { user: req.user });
     } else {
-        req.setFlash('type', 'error');
-        req.setFlash('message', 'ERROR!');
-        res.render('signin', { user: null });
+        req.setFlash('type', 'info');
+        req.setFlash('message', 'Please sign in first');
+        res.redirect('signin');
     }
 });
 
 // --- Authentication routes ---
-app.get('/signin', checkNotAuthenticated, (req, res) => res.render('signin'));
+app.get('/signin', checkNotAuthenticated, (req, res) => {
+    res.render('signin', { packageVersion: packageVersion });
+});
 
 app.post('/signin', (req, res, next) => {
-    console.log(JSON.stringify(req.body, null, 2));
+    //console.log(JSON.stringify(req.body, null, 2));
     // User.create(req.body.username, req.body.password).then(() => {
     //     req.setFlash('type', 'success');
     //     req.setFlash('message', 'User created, you can now log in');
@@ -122,7 +130,7 @@ app.post('/signin', (req, res, next) => {
         if (err) return next(err);
 
         if (!user) {
-            req.setFlash('type', 'error');
+            req.setFlash('type', 'info');
             req.setFlash('message', info.message || 'Login failed');
             req.setFlash('username', req.body.username);
             return res.redirect('/signin');
