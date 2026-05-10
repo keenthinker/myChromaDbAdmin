@@ -8,6 +8,9 @@ import { User } from './usermanagement/usermanagement.js';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { checkAuthenticated, checkAuthenticatedJson, checkNotAuthenticated } from './auth.js';
+import dotenv from 'dotenv';
+import path from 'node:path';
+import { fileURLToPath } from 'url';
 
 const packageVersion = pkg.version;
 
@@ -16,6 +19,14 @@ const port = process.env.PORT || 3000;
 
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const envPath = path.resolve(__dirname, '../secrets/mychromadbadmin.txt');
+dotenv.config({ path: envPath });
+
+const isProduction = process.env.NODE_ENV === 'production';
+const sessionSecret = process.env.SESSION_SECRET;
 
 // Chroma 
 const chromaConfigurations = await readConfig();
@@ -31,10 +42,17 @@ app.set('view engine', 'ejs');
 
 // --- Session configuration ---
 app.use(session({
-    secret: '9fH233sdHHQ-fs!23124', //process.env.SESSION_SECRET, // use a strong secret in production
+    name: 'mychromadbadmin',
+    secret: sessionSecret, // use a strong secret in production
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false } // Set to true if using HTTPS
+    cookie: { 
+        secure: isProduction, // Set to true if using HTTPS
+        httpOnly: true,
+        sameSite: 'strict', // lax
+        maxAge: 1000 * 60 * 60 * 24 // 1 day
+
+    }
 }));
 
 // --- custom flash middleware ---

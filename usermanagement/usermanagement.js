@@ -58,15 +58,12 @@ export const User = {
         return bcrypt.compare(password, user.password);
     },
 
-    // async updateTokens(userId, byTokenCount) {
+    // async updateHandler(userId, newValue) {
     //     const user = await this.findById(userId);
     //     if (!user || !user.id) {
     //         return userWithError('User not found');
     //     }
-    //     user.tokens = Number(user.tokens) + Number(byTokenCount);
-    //     if (user.tokens < 0) {
-    //         user.tokens = 0;
-    //     }
+    //     user.currentValue = newValue;
     //     await db.write();
     //     return user;
     // }

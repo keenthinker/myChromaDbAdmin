@@ -27,6 +27,7 @@
     "autoprefixer": "^10.4.23",
     "bcrypt": "^6.0.0",
     "chromadb": "^3.2.0",
+    "dotenv": "^17.4.2",
     "ejs": "^3.1.10",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
