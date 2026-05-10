@@ -143,6 +143,13 @@ app.post('/signin', (req, res, next) => {
     })(req, res, next);
 });
 
+app.post('/logout', (req, res, next) => {
+    req.logout((err) => {
+        if (err) return next(err);
+        res.redirect('/');
+    });
+});
+
 // Chroma handlers
 app.get('/heartbeat', async (req, res) => {
     const heartbeat = await chroma.heartbeat();
