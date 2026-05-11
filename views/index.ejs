@@ -22,10 +22,27 @@
         <!-- sidebar -->
         <aside class="w-64 bg-slate-900 text-slate-200 flex flex-col">
             <div class="px-4 py-4 border-b border-slate-800">
-                <h1 class="text-lg font-bold tracking-wide">
-                    <a href="/" @click.prevent="showDashboard">myChromaDbAdmin</a>
-                </h1>
-                <p class="text-xs text-slate-400">Chroma Vector Store Manager</p>
+                <!-- Header with logo -->
+                <div class="flex items-center gap-3 mb-1">
+                    <!-- Logo -->
+                    <svg class="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
+                        <defs>
+                            <linearGradient id="chromaGradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#6366F1"/> <!-- Indigo -->
+                                <stop offset="1" stop-color="#EC4899"/> <!-- Pink -->
+                            </linearGradient>
+                        </defs>
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="url(#chromaGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="url(#chromaGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="url(#chromaGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+
+                    <h1 class="text-lg font-bold tracking-tight leading-none">
+                        <a href="/" @click.prevent="showDashboard" class="hover:text-white transition-colors">myChromaDbAdmin</a>
+                    </h1>
+                </div>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest ml-[40px]">Vector Store Manager</p>
+
                 <!-- User section -->
                 <div class="mt-4 pt-4 border-t border-slate-800/50">
                     <div class="flex items-center gap-3 mb-3">
@@ -68,7 +85,7 @@
                 <div class="flex items-center justify-between px-4 mb-2">
                     <span class="text-xs uppercase text-slate-400">Collections</span>
                     <button @click="editCollection(undefined)"
-                        class="bg-chroma-600 text-white px-3 py-1.5 rounded text-xs hover:bg-chroma-500"
+                        class="bg-indigo-600 text-white px-3 py-1.5 rounded text-xs hover:bg-indigo-500"
                         :disabled="globalError">
                         Add Collection
                     </button>
