@@ -15,13 +15,20 @@ function app() {
         packageVersion: "",
         databaseAddress: "http://localhost:8000", // todo: make configurable,
         globalError: false,
+        userSettings: {
+            username: ""
+        },
 
         async LIMIT() {
             return 10;
         },
 
         async init() {
+            if (window.userData) {
+                this.userSettings.username = window.userData.username || "";
+            }
             client = new ChromaDbClient();
+            this.packageVersion = await client.packageVersion();
             const heartbeat = await client.heartbeat();
             if (heartbeat.error) {
                 this.globalError = true;
@@ -29,7 +36,6 @@ function app() {
                 this.globalError = false;
                 console.log(`🩷 ${heartbeat}`);
                 this.version = await client.version();
-                this.packageVersion = await client.packageVersion();
                 this.collections = await client.listCollections();
                 this.documentsCount = await client.countAllDocuments();
             }
@@ -243,6 +249,10 @@ function app() {
             this.currentOffset += LIMIT;
             this.footerTableItemsPagingText = await this.footerTableItems(col);
             this.openCollection(col);
+        },
+
+        async showSettings() {
+            this.view = 'settings';
         },
     }
 }

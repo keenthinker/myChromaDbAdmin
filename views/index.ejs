@@ -13,21 +13,79 @@
 </head>
 
 <body class="bg-gray-100 h-screen overflow-hidden" x-data="app()">
+    <script>
+        window.userData = {
+            username: '<%= locals.user ? user.username : "" %>'
+        };
+    </script>
     <div class="flex h-full">
         <!-- sidebar -->
         <aside class="w-64 bg-slate-900 text-slate-200 flex flex-col">
             <div class="px-4 py-4 border-b border-slate-800">
-                <h1 class="text-lg font-bold tracking-wide">
-                    <a href="/" @click.prevent="showDashboard">myChromaDbAdmin</a>
-                </h1>
-                <p class="text-xs text-slate-400">Chroma Vector Store Manager</p>
+                <!-- Header with logo -->
+                <div class="flex items-center gap-3 mb-1">
+                    <!-- Logo -->
+                    <svg class="w-7 h-7 shrink-0" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
+                        <defs>
+                            <linearGradient id="chromaGradient" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#6366F1"/> <!-- Indigo -->
+                                <stop offset="1" stop-color="#EC4899"/> <!-- Pink -->
+                            </linearGradient>
+                        </defs>
+                        <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="url(#chromaGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 17L12 22L22 17" stroke="url(#chromaGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M2 12L12 17L22 12" stroke="url(#chromaGradient)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+
+                    <h1 class="text-lg font-bold tracking-tight leading-none">
+                        <a href="/" @click.prevent="showDashboard" class="hover:text-white transition-colors">myChromaDbAdmin</a>
+                    </h1>
+                </div>
+                <p class="text-[10px] text-slate-500 uppercase tracking-widest ml-[40px]">Vector Store Manager</p>
+
+                <!-- User section -->
+                <div class="mt-4 pt-4 border-t border-slate-800/50">
+                    <div class="flex items-center gap-3 mb-3">
+                        <!-- Avatar -->
+                        <div class="h-8 w-8 shrink-0 rounded-full bg-slate-700 flex items-center justify-center text-slate-300 font-semibold border border-slate-600">
+                            <%= user.username.charAt(0).toUpperCase() %>
+                        </div>
+                        
+                        <!-- Name & settings link -->
+                        <div class="flex flex-1 items-center justify-between min-w-0">
+                            <div class="flex flex-col overflow-hidden">
+                                <span class="text-sm font-medium text-slate-200 truncate"><%= user.username %></span>
+                                <span class="text-[10px] text-slate-500 uppercase tracking-wider">admin</span>
+                            </div>
+                            
+                            <!-- Settings link -->
+                            <a href="#" @click.prevent="showSettings()" class="text-slate-500 hover:text-slate-200 transition-colors p-1" title="Settings">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Logout button -->
+                    <form action="/logout" method="POST">
+                        <button type="submit" class="w-full flex items-center justify-center gap-2 px-3 py-2 bg-slate-800 hover:bg-red-900/30 hover:text-red-400 border border-slate-700 rounded text-xs transition-colors group">
+                            <svg class="w-4 h-4 text-slate-500 group-hover:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                            Logout
+                        </button>
+                    </form>
+                </div>
+
             </div>
 
             <div class="flex-1 overflow-auto py-2">
                 <div class="flex items-center justify-between px-4 mb-2">
                     <span class="text-xs uppercase text-slate-400">Collections</span>
                     <button @click="editCollection(undefined)"
-                        class="bg-chroma-600 text-white px-3 py-1.5 rounded text-xs hover:bg-chroma-500"
+                        class="bg-indigo-600 text-white px-3 py-1.5 rounded text-xs hover:bg-indigo-500"
                         :disabled="globalError">
                         Add Collection
                     </button>
@@ -517,6 +575,72 @@
                         </form>
                     </div>
                 </template>
+
+                <!-- User settings view -->
+                <template x-if="view === 'settings'">
+                    <div class="flex justify-center w-full p-8">
+                        <div class="w-full max-w-4xl">
+                            <h1 class="text-3xl font-bold text-gray-900 mb-6">Settings</h1>
+                            
+                            <div class="grid gap-6">
+                                <!-- Profile card -->
+                                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                                    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                                        <h2 class="font-semibold text-gray-700">Profile Information</h2>
+                                    </div>
+                                    <div class="p-6 space-y-4">
+                                        <div class="grid grid-cols-1 gap-4">
+                                            <div>
+                                                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Username</label>
+                                                <input type="text" x-model="userSettings.username" readonly
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-slate-900 outline-none transition-all">
+                                            </div>
+                                            <!-- <div>
+                                                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Email</label>
+                                                <input type="email" x-model="userSettings.email" 
+                                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-slate-900 outline-none transition-all">
+                                            </div> -->
+                                        </div>
+                                        <!-- <div class="pt-2">
+                                            <button @click="updateProfile()" class="bg-slate-900 text-white px-4 py-2 rounded text-sm hover:bg-slate-800 transition-colors font-medium">
+                                                Save Changes
+                                            </button>
+                                        </div> -->
+                                    </div>
+                                </div>
+
+                                <!-- Security card -->
+                                <!-- <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                                    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                                        <h2 class="font-semibold text-gray-700">Security</h2>
+                                    </div>
+                                    <form action="/settings/password" method="POST" class="p-6 space-y-4">
+                                        <div>
+                                            <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Current Password</label>
+                                            <input type="password" name="currentPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-slate-900">
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">New Password</label>
+                                                <input type="password" name="newPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-slate-900">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Confirm Password</label>
+                                                <input type="password" name="confirmPassword" class="w-full px-3 py-2 border border-gray-300 rounded-md outline-none focus:ring-2 focus:ring-slate-900">
+                                            </div>
+                                        </div>
+                                        <div class="pt-2">
+                                            <button type="submit" class="border border-gray-300 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-50 transition-colors font-medium">
+                                                Update Password
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
             </div>
         </main>
     </div>

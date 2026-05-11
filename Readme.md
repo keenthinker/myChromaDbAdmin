@@ -22,6 +22,7 @@ The name **myChromaDbAdmin** is directly inspired by [phpMyAdmin](https://www.ph
 
 - View and manage (create, delete, rename) collections and collections metadata in your Chroma database.
 - Browse and manage (add, edit, clone, delete) documents content and metadata within collections.
+- Integrated user authentication and session management to ensure secure remote access and protected instance hosting.
 
 ## Tech Stack
 
@@ -32,6 +33,7 @@ The name **myChromaDbAdmin** is directly inspired by [phpMyAdmin](https://www.ph
 - Backend: 
     - Node.js
     - Express.js
+    - Passport.js (Authentication)
     - The Chroma [npm package](https://docs.trychroma.com/docs/overview/getting-started?lang=typescript)
 
 ## Motivation
@@ -55,6 +57,71 @@ I developed this web app to provide a more flexible solution for browsing, inspe
    ```
 3. Open your web browser and navigate to `http://localhost:3000` to access the myChromaDbAdmin interface.
 
+## Configuration and Security
+
+The application requires two files to manage security and user access:
+
+- environment variables configuration file
+- user data configuration file
+
+For enhanced security, configuration and user data are stored in a dedicated `/secrets` directory located outside the application's web-accessible root.
+
+### Environment Variables external configuration file
+
+By default instead of a standard `.env` file, the app looks for a configuration file named `mychromadbadmin.txt`.
+This file defines the application's runtime environment:
+
+- `SESSION_SECRET`: a secure string used to sign the session cookie.
+- `NODE_ENV`: set to `development` or `production`. Used for example, to ensure secure flags are set in live environments.
+
+### User Data configuration file
+
+Authentication details are stored in a local file named `mychromadbadminusers.json`. Each user object contains:
+
+- `id`: a unique UUID string identifying the user.
+- `username`: the name used for sign-in.
+- `password`: a secure `bcrypt hash` of the user's password (never stored in plain text).
+- `createdAt`: a timestamp indicating when the user account was created.
+
+### File Structure Example
+
+To ensure the app starts correctly, your directory structure should look like this:
+
+```
+/secrets
+  ├── mychromadbadmin.txt
+  └── mychromadbadminusers.json
+/myChromaDbAdmin (Project root served by the web server)
+  ├── server.js
+  ├── package.json
+  └── ...
+```
+
+> If you prefer a standard setup, these paths can easily be adapted in the source code to use a default `.env` file or an alternative location for the user data (look in `server.js` and `usermanagement.js`).
+
+### Initial User Setup
+
+To enable your first login, create the `mychromadbadminusers.json` file with a default user entry. Below is a template:
+
+```
+{
+  "users": [
+    {
+      "id": "f16d0264-5791-4e7e-b101-c92e1271c8bb",
+      "username": "mychromadbadmin2",
+      "password": "INSERT_BCRYPT_HASH_HERE",
+      "createdAt": "2026-05-09T09:58:23.194Z"
+    }
+  ]
+}
+```
+
+Create the password hash by running the following command once in your project root directory (ensure dependencies are installed first):
+
+```JavaScript
+node -e "console.log(require('bcrypt').hashSync('yourpasswordhere', 10))"
+```
+
 ## Usage and features
 
 You can find a detailed description and numerous screenshots in the [Documentation](https://github.com/keenthinker/myChromaDbAdmin/blob/main/documentation/Documentation.md) folder.
@@ -74,9 +141,8 @@ The following items outline planned improvements and features for upcoming relea
 - [ ] Improve accessibility:
   - Correct tab order
   - Add useful keyboard shortcuts
-- [ ] Implement user management:
-  - Login/authentication
-  - Basic access control (e.g. restrict users to specific collections)
+- [x] Implement user management (1): login/authentication
+- [ ] Implement user management (2): basic access control (e.g. restrict users to specific collections)
 - [ ] Add internationalization (i18n) and translation support
 
 
