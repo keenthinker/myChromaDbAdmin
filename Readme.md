@@ -135,6 +135,7 @@ The following items outline planned improvements and features for upcoming relea
 - [ ] Make the database server address and port configurable
 - [ ] Support multiple databases and tenants (not limited to defaults)
 - [x] Improve collection ordering in the sidebar (sort alphabetically)
+- [x] Implement search within a collection (similarity/semantic and exact search)
 - [x] Fix metadata key/value handling:
   - Allow newly added metadata keys to start empty
   - Metadata key/value pairs sorted alphabetically by key
