@@ -63,6 +63,12 @@ class ChromaDbClient {
             body: JSON.stringify({ ids, documents, metadatas })
         });
     }
+    async searchItems(name, searchType, searchText, limit = 10) {
+        return this.request(`/collections/${name}/items-search`, {
+            method: 'POST',
+            body: JSON.stringify({ searchType, searchText, limit })
+        });
+    }
     async deleteItems(name, ids) {
         return this.request(`/collections/${name}/items-delete`, {
             method: 'POST',

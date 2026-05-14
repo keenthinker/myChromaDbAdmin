@@ -136,4 +136,21 @@ export default class ChromaDb {
         }
         return (collectionsSubset.length === limit) ? await totalCollectionsDocumentsCount(offset + limit, total + collectionDocumentsCount) : total + collectionDocumentsCount;
     }
+
+    async collectionItemsSearch(collectionName, searchType, searchText, limit = 10) {
+        const collection = await client.getCollection({ name: collectionName });
+        // Semantic/Similarity search over the complete set of documents in the collection.
+        const queryOptions = {
+            queryTexts: [searchText],
+            nResults: limit,
+            // where: { "status": "active" },
+            //whereDocument: { "$contains": searchText }
+        };
+        if (searchType === 'exact') {
+            queryOptions.whereDocument = { "$contains": searchText };
+        }
+        const searchResults = await collection.query(queryOptions);
+        return searchResults;
+    }
+
 }

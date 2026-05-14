@@ -208,6 +208,7 @@
                 <!-- Collection View -->
                 <template x-if="view === 'collection'">
                     <div class="p-6 h-full flex flex-col">
+                        <!-- Header -->
                         <div class="flex justify-between items-start mb-6">
                             <div>
                                 <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
@@ -231,22 +232,54 @@
                                     Collection</button>
                             </div>
                         </div>
+                        <!-- Search bar control -->
+                        <div class="mb-4 bg-white border border-gray-200 rounded-lg p-3 shadow-sm flex flex-col sm:flex-row gap-2 items-center">
+                            <!-- Search type: "similarity" or "exact" -->
+                            <div class="w-full sm:w-48">
+                                <select 
+                                    x-model="searchType" 
+                                    class="w-full px-2 py-1.5 bg-gray-50 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-chroma-600 focus:border-chroma-600 font-medium text-gray-700">
+                                    <option value="similarity">🤖 Semantic Search</option>
+                                    <option value="exact">🔤 Exact Match</option>
+                                </select>
+                            </div>
 
-                        <div
-                            class="flex-1 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
+                            <!-- Search input controls -->
+                            <div class="relative flex-1 w-full">
+                                <input 
+                                    type="text" 
+                                    x-model="searchQuery" 
+                                    @keydown.enter="executeSearch()"
+                                    :placeholder="searchType === 'similarity' ? 'Search documents by semantic similarity...' : 'Search for exact text contains...'" 
+                                    class="w-full pl-3 pr-10 py-1.5 bg-gray-50 border border-gray-300 rounded text-sm focus:outline-none focus:ring-1 focus:ring-chroma-600 focus:border-chroma-600"/>
+                                <button 
+                                    x-show="searchQuery.length > 0" 
+                                    @click="resetSearch()" 
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs"
+                                    title="Reset search">
+                                    ✕
+                                </button>
+                            </div>
+                            <button 
+                                @click="executeSearch()" 
+                                class="w-full sm:w-auto bg-chroma-600 text-white px-4 py-1.5 rounded text-sm hover:bg-chroma-500 font-medium whitespace-nowrap">
+                                Search
+                            </button>
+                        </div>
+                        <!-- Documents table -->
+                        <div class="flex-1 bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden flex flex-col">
                             <div class="overflow-auto flex-1">
                                 <table class="min-w-full divide-y divide-gray-200">
                                     <thead class="bg-gray-50 sticky top-0">
                                         <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                                ID</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                                Document</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-                                                Metadata</th>
-                                            <th
-                                                class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">
-                                                Actions</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">ID</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Document</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Metadata</th>
+                                            <!-- Shows vector distance (score) when searching -->
+                                            <!-- <template x-if="isSearching"> -->
+                                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Match %</th>
+                                            <!-- </template> -->
+                                            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
@@ -262,13 +295,17 @@
                                                     </template>
                                                 </td>
                                                 <td class="px-6 py-4 font-mono text-xs text-gray-500 truncate max-w-xs">
-                                                    <template x-if="doc.document">
+                                                    <template x-if="doc.metadata">
                                                         <span x-text="JSON.stringify(doc.metadata)"></span>
                                                     </template>
-                                                    <template x-if="!doc.document">
+                                                    <template x-if="!doc.metadata">
                                                         <span class="text-gray-300">{}</span>
                                                     </template>
                                                 </td>
+                                                <!-- Displays the vector distance when searching -->
+                                                <!-- <template x-if="isSearching"> -->
+                                                    <td class="px-6 py-4 font-mono text-sm text-amber-600" x-text="doc.distance ? doc.distance.toFixed(0) : ''"></td>
+                                                <!-- </template> -->
                                                 <td class="px-6 py-4 text-right">
                                                     <button @click="editDocument(doc)"
                                                         class="border border-blue-600 text-blue-600 hover:text-blue-800 text-sm edit-item-btn bg-blue-100 rounded py-1 px-2"
@@ -281,29 +318,35 @@
                                         </template>
                                         <template x-if="documents.length === 0">
                                             <tr>
-                                                <td colspan="4" class="px-6 py-8 text-center text-gray-400">No documents
-                                                    found</td>
+                                                <td :colspan="isSearching ? 5 : 4" class="px-6 py-8 text-center text-gray-400">No documents found</td>
                                             </tr>
                                         </template>
                                     </tbody>
                                 </table>
                             </div>
-                            <div
-                                class="bg-gray-50 px-6 py-3 border-t border-gray-200 flex justify-between items-center text-sm">
-                                <span x-text="footerTableItemsPagingText"></span>
+                            
+                            <!-- Paging Footer (Conditionally hidden during search) -->
+                            <div class="bg-gray-50 px-6 py-3 border-t border-gray-200 flex justify-between items-center text-sm">
+                                <template x-if="!isSearching">
+                                    <span x-text="footerTableItemsPagingText"></span>
+                                </template>
+                                <template x-if="isSearching">
+                                    <span class="text-amber-700 font-medium">Showing top 10 vector matches for "<span x-text="searchQuery"></span>"</span>
+                                </template>
+                                
                                 <div class="space-x-2">
                                     <button id="prevBtn" class="disabled:opacity-50 text-chroma-600 font-medium"
                                         @click="footerTableItemsPagingPreviousClick(currentCollection)"
-                                        :disabled="footerTableItemsPagingPreviousDisabled">Previous</button>
+                                        :disabled="footerTableItemsPagingPreviousDisabled || isSearching">Previous</button>
                                     <button id="nextBtn" class="disabled:opacity-50 text-chroma-600 font-medium"
                                         @click="footerTableItemsPagingNextClick(currentCollection)"
-                                        :disabled="footerTableItemsPagingNextDisabled">Next</button>
+                                        :disabled="footerTableItemsPagingNextDisabled || isSearching">Next</button>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </template>
+
 
                 <!-- Add or edit collection view -->
                 <template x-if="view === 'collectionEdit'">

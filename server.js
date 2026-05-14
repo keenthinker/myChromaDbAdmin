@@ -227,6 +227,12 @@ app.post('/collections/:name/upsert', checkAuthenticatedJson, async (req, res) =
     res.json({ success: true });
 });
 
+app.post('/collections/:name/items-search', checkAuthenticatedJson, async (req, res) => {
+    const { searchType, searchText, limit } = req.body;
+    const searchResults = await chroma.collectionItemsSearch(req.params.name, searchType, searchText, limit);
+    res.json(searchResults);
+});
+
 app.post('/collections/:name/items-delete', checkAuthenticatedJson, async (req, res) => {
     await chroma.deleteItems(req.params.name, req.body.ids);
     res.json({ success: true });

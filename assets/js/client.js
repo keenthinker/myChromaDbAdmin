@@ -18,6 +18,9 @@ function app() {
         userSettings: {
             username: ""
         },
+        searchQuery: '',
+        isSearching: false,
+        searchType: 'similarity', 
 
         async LIMIT() {
             return 10;
@@ -44,11 +47,13 @@ function app() {
         async showDashboard() {
             this.collections = await client.listCollections();
             this.documentsCount = await client.countAllDocuments();
+            this.resetSearch(false);
             this.view = 'dashboard';
         },
 
         async openCollection(col) {
             if (col) {
+                this.resetSearch(false);
                 if (col._name !== this.currentCollection?._name) {
                     this.currentOffset = 0;
                 }
@@ -66,7 +71,8 @@ function app() {
                 this.documents = data.ids.map((id, i) => ({
                     id,
                     document: data.documents[i],
-                    metadata: data.metadatas[i] || {}
+                    metadata: data.metadatas[i] || {},
+                    distance: null
                 }));
 
                 this.view = 'collection';
@@ -254,5 +260,76 @@ function app() {
         async showSettings() {
             this.view = 'settings';
         },
+
+        async executeSearch() {
+            if (!this.searchQuery.trim()) {
+                this.resetSearch();
+                return;
+            }
+            
+            this.isSearching = true;
+            try {
+                const data = await client.searchItems(this.currentCollection._name, this.searchType, this.searchQuery);
+                // Map ChromaDb's nested arrays into flat row objects for x-for rendering
+                if (data.ids && data.ids[0]) {
+                    this.documents = data.ids[0].map((id, index) => ({
+                        id: id,
+                        document: data.documents[0][index],
+                        metadata: data.metadatas[0][index] || {},
+                        distance: data.distances ? this.similarityPercentage(data.distances[0][index], this.currentCollection._configuration.hnsw.space) : null
+                    }));
+                } else {
+                    this.documents = [];
+                }
+            } catch (error) {
+                console.error("Search failed:", error);
+                this.documents = [];
+            }
+        },
+
+        async resetSearch(shouldReloadCurrentCollection = true) {
+            this.searchQuery = '';
+            this.isSearching = false;
+            // Load the original collection items again, since the search query is cleared
+            if (shouldReloadCurrentCollection) {
+                await this.openCollection(this.currentCollection);
+            }
+        },
+
+        // Calculates similarity percentage based on distance and space type, 
+        // with clamping to ensure values between 0% and 100%
+        similarityPercentage(distance, spaceType = 'cosine') {
+            if (distance === null || distance === undefined) return 'N/A';
+            
+            let similarity = 0;
+
+            switch (spaceType.toLowerCase()) {
+                case 'cosine':
+                    // distance: 0 to 2 -> map to 100% down to 0%
+                    similarity = (1 - distance) * 100;
+                    break;
+                    
+                case 'l2':
+                    // distance: 0 to 4 -> map to 100% down to 0%
+                    // dividing distance by 4 scales it to a 0-1 range
+                    similarity = (1 - (distance / 4)) * 100;
+                    break;
+                    
+                case 'ip':
+                    // ChromaDB IP distance is calculated as (1 - Inner Product)
+                    // distance: 0 (IP=1) to 2 (IP=-1) -> map to 100% down to 0%
+                    similarity = (1 - distance) * 100;
+                    break;
+                    
+                default:
+                    // fallback to cosine similarity mapping
+                    similarity = (1 - distance) * 100;
+            }
+
+            // Clamp values firmly between 0 and 100 to handle floating-point anomalies
+            const finalScore = Math.max(0, Math.min(100, Math.round(similarity)));
+            
+            return finalScore;
+        }
     }
 }
