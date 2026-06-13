@@ -15,7 +15,7 @@ import { fileURLToPath } from 'url';
 const packageVersion = pkg.version;
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3350;
 
 app.disable('x-powered-by');
 app.set('trust proxy', 1);
@@ -259,6 +259,6 @@ app.use((err, req, res, next) => {
     res.status(500).json({ error: 'Error' });
 });
 
-app.listen(port, () => {
+app.listen(port, "127.0.0.1", () => {
     console.log(`myChromaDbAdmin running at http://localhost:${port}`);
 });
